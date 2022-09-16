@@ -20,12 +20,15 @@ object RetrofitFactory {
         }
     }
 
+    val client = OkHttpClient.Builder().build()
+
     private fun newRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
+            .baseUrl("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/")
+            .client(client)
             .addCallAdapterFactory(FlowCallAdapterFactory())
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(Gson()))
-            .baseUrl("https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/")
             .build()
     }
 
