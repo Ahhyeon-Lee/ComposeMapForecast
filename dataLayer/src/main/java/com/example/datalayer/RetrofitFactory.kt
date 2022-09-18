@@ -1,12 +1,10 @@
 package com.example.datalayer
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import retrofit2.CallAdapter
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import tech.thdev.network.flowcalladapterfactory.FlowCallAdapterFactory
 
 object RetrofitFactory {
 
@@ -20,15 +18,21 @@ object RetrofitFactory {
         }
     }
 
-    val client = OkHttpClient.Builder().build()
+    val gson = GsonBuilder().setLenient().create()
+
+    val interceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val okHttpClient = OkHttpClient().newBuilder()
+        .addNetworkInterceptor(interceptor)
+        .build()
 
     private fun newRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/")
-            .client(client)
-            .addCallAdapterFactory(FlowCallAdapterFactory())
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create(Gson()))
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
             .build()
     }
 

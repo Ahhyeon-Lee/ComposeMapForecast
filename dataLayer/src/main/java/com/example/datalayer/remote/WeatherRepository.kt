@@ -10,8 +10,16 @@ class WeatherRepository {
 
     private val weatherRetrofit = RetrofitFactory.getRetrofitInstance().create(RestApiService::class.java)
 
-    fun getWeatheInfo(nx:String, ny:String, date:String, time:String, coroutineScope: CoroutineScope) =
-            weatherRetrofit.getWeatherInfo(nx, ny, date, time).flowOn(Dispatchers.IO)
+    suspend fun getWeatheInfo(nx:String, ny:String, date:String, time:String) =
+        flowOf(
+            weatherRetrofit.getWeatherInfo(
+                nx = nx,
+                ny = ny,
+                date = date,
+                time = time
+            )
+        ).flowOn(Dispatchers.IO)
+
 
 
 }
