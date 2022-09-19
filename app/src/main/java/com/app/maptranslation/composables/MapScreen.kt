@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -46,7 +47,9 @@ const val TRANSLATE_SCREEN = "TranslateScreen"
 const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
 
 @Composable
-fun MyApp(mapViewModel: MapScreenViewModel) {
+fun MyApp(
+    mapViewModel: MapScreenViewModel = viewModel()
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -117,7 +120,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                     Text(text = "ApiTest")
                 }
                 Button(onClick = {
-                    viewModel.readRegionsExcelFile(context)
+                    viewModel.checkRegionsData(context.applicationContext)
                 }) {
                     Text(text = "ReadExcelTest")
                 }

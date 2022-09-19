@@ -1,19 +1,28 @@
 package com.app.maptranslation
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import com.app.maptranslation.composables.MyApp
-import com.app.maptranslation.viewmodels.MapScreenViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val mapViewModel by viewModels<MapScreenViewModel>()
-            MyApp(mapViewModel)
+            MyApp()
         }
+        applicationContext
+
+        Locale.getDefault().country
+        val locale = Locale.getDefault().country
+        Log.i("아현", "$locale")
     }
 }

@@ -2,7 +2,7 @@ plugins {
     id(Plugins.ANDROID_APPLICATION)
     id(Plugins.JETBRAINS_ANDROID)
     id(Plugins.MAPS_GRADLE)
-    kotlin("kapt")
+    kotlin(Plugins.KAPT)
     id(Plugins.HILT_GRADLE)
 }
 
@@ -72,6 +72,7 @@ dependencies {
     implementation(Libraries.Google.LOCATION)
 
     implementation(Libraries.Hilt.HILT_ANDROID)
+    implementation(Libraries.Hilt.HILT_VIEWMODEL)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
     implementation(Libraries.Coroutine.COROUTINE_ANDROID)

@@ -13,6 +13,7 @@ object Versions {
     const val COROUTINE = "1.6.1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "3.11.0"
+    const val ROOM = "2.4.3"
 }
 
 object Libraries {
@@ -47,6 +48,7 @@ object Libraries {
     object Hilt {
         const val HILT_ANDROID = "com.google.dagger:hilt-android:${Versions.HILT}"
         const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:${Versions.HILT}"
+        const val HILT_VIEWMODEL = "androidx.hilt:hilt-navigation-compose:1.0.0"
         const val HILT_GRADLE_PLUGIN = "com.google.dagger:hilt-android-gradle-plugin:${Versions.HILT}"
     }
 
@@ -62,8 +64,20 @@ object Libraries {
         const val OKHTTP_LOGGING = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     }
 
+    object Room {
+        const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
+        const val ROOM_COMPILER = "androidx.room:room-compiler:${Versions.ROOM}"
+        const val ROOM_KTX = "androidx.room:room-ktx:${Versions.ROOM}"
+    }
+
     object Test {
         const val JUNIT = "junit:junit:4.13.2"
+    }
+
+    object ExcelReader {
+        const val FASTEXCEL = "org.dhatim:fastexcel:0.12.3"
+        const val FASTEXCEL_READER = "org.dhatim:fastexcel-reader:0.12.3"
+        const val JEXCEL = "net.sourceforge.jexcelapi:jxl:2.6.12"
     }
 
 }

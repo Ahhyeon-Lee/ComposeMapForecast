@@ -36,6 +36,4 @@ dependencies {
     testImplementation(Libraries.Test.JUNIT)
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
-
-    implementation(project(":dataLayer"))
 }

@@ -1,6 +1,7 @@
 plugins {
     id(Plugins.ANDROID_LIBRARY)
     id(Plugins.JETBRAINS_ANDROID)
+    kotlin(Plugins.KAPT)
 }
 
 android {
@@ -46,4 +47,18 @@ dependencies {
     // Coroutine
     implementation(Libraries.Coroutine.COROUTINE_ANDROID)
     implementation(Libraries.Coroutine.FLOW_ADAPTER)
+
+    // Hilt
+    implementation(Libraries.Hilt.HILT_ANDROID)
+    kapt(Libraries.Hilt.HILT_COMPILER)
+
+    // Room
+    implementation(Libraries.Room.ROOM_RUNTIME)
+    kapt(Libraries.Room.ROOM_COMPILER)
+    implementation(Libraries.Room.ROOM_KTX)
+
+    // ExcelReader
+    implementation(Libraries.ExcelReader.JEXCEL)
+
+    implementation(project(":util"))
 }

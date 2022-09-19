@@ -6,15 +6,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "regions")
 data class RegionRowEntity(
-    @ColumnInfo(name = "city") val city:String,
-    @ColumnInfo(name = "gu") val gu:String?,
-    @ColumnInfo(name = "dong") val dong:String?,
-    @ColumnInfo(name = "nx") val nx:String,
-    @ColumnInfo(name = "ny") val ny:String,
-    @ColumnInfo(name = "longtitude") val longtitude:String,
-    @ColumnInfo(name = "latitude") val latitude:String
+    @ColumnInfo(name = "city") var city:String,
+    @ColumnInfo(name = "gu") var gu:String?,
+    @ColumnInfo(name = "dong") var dong:String?,
+    @ColumnInfo(name = "nx") var nx:String,
+    @ColumnInfo(name = "ny") var ny:String,
+    @ColumnInfo(name = "longtitude") var longtitude:String,
+    @ColumnInfo(name = "latitude") var latitude:String
 ) {
-    @PrimaryKey(autoGenerate = true) val id:Long = 0
+    @PrimaryKey(autoGenerate = true) var id:Long = 0
 }
 
 data class Regions(
