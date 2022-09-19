@@ -10,7 +10,7 @@ class WeatherRepository {
 
     private val weatherRetrofit = RetrofitFactory.getRetrofitInstance().create(RestApiService::class.java)
 
-    suspend fun getWeatheInfo(nx:String, ny:String, date:String, time:String) =
+    suspend fun getWeatherInfo(nx:String, ny:String, date:String, time:String) =
         flowOf(
             weatherRetrofit.getWeatherInfo(
                 nx = nx,

@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -19,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -28,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
 import com.app.maptranslation.viewmodels.MapScreenViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -70,6 +72,7 @@ fun MyApp(mapViewModel: MapScreenViewModel) {
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
+    val context = LocalContext.current
     Map_translationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -113,6 +116,11 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                 }) {
                     Text(text = "ApiTest")
                 }
+                Button(onClick = {
+                    viewModel.readRegionsExcelFile(context)
+                }) {
+                    Text(text = "ReadExcelTest")
+                }
             }
         }
     }
@@ -136,27 +144,50 @@ fun MapScreen(navController: NavController) {
 @Composable
 fun TextFieldBox(navController: NavController) {
     val (text, setValue) = remember { mutableStateOf("") }
-    Surface(shape = RoundedCornerShape(8.dp)) {
+    Surface(shape = CircleShape) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
             modifier = Modifier.padding(horizontal = 5.dp)
         ) {
             IconButton(onClick = { navController.popBackStack() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "BackBtn")
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    tint = Color.DarkGray,
+                    contentDescription = "BackBtn")
             }
             TextField(
                 value = text,
                 onValueChange = setValue,
+                placeholder = { Text(text = "시, 구, 동 검색") },
                 modifier = Modifier
-                    .width(200.dp)
-                    .background(Color.White)
+                    .width(180.dp)
+                    .background(Color.White),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = Color.DarkGray,
+                    backgroundColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                singleLine = true
             )
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.Phone, contentDescription = "BackBtn")
+            IconButton(
+                modifier = Modifier.wrapContentSize(),
+                onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_mic_24),
+                    tint = colorResource(id = R.color.sky),
+                    contentDescription = "VoiceBtn"
+                )
             }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "SearchBtn")
+            IconButton(
+                modifier = Modifier.wrapContentSize(),
+                onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    tint = colorResource(id = R.color.sky),
+                    contentDescription = "SearchBtn"
+                )
             }
         }
     }
@@ -234,4 +265,11 @@ fun HomeScreenPreview() {
 fun MapScreenPreview() {
     val navController = rememberNavController()
     MapScreen(navController)
+}
+
+@Preview
+@Composable
+fun TextFieldAreaPreview() {
+    val navController = rememberNavController()
+    TextFieldBox(navController)
 }

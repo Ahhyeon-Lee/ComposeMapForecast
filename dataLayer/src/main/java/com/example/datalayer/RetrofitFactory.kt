@@ -9,6 +9,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitFactory {
 
     private var retrofit : Retrofit? = null
+    const val weatherApiBaseUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+
+    private val gson = GsonBuilder().setLenient().create()
+
+    private val interceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val okHttpClient = OkHttpClient().newBuilder()
+        .addNetworkInterceptor(interceptor)
+        .build()
 
     fun getRetrofitInstance() : Retrofit {
         return retrofit ?: synchronized(this) {
@@ -18,19 +29,9 @@ object RetrofitFactory {
         }
     }
 
-    val gson = GsonBuilder().setLenient().create()
-
-    val interceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
-    val okHttpClient = OkHttpClient().newBuilder()
-        .addNetworkInterceptor(interceptor)
-        .build()
-
     private fun newRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/")
+            .baseUrl(weatherApiBaseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
             .build()
