@@ -1,4 +1,4 @@
-package com.app.maptranslation.composables
+package com.app.maptranslation.composable
 
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
-import com.app.maptranslation.viewmodels.MapScreenViewModel
+import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView

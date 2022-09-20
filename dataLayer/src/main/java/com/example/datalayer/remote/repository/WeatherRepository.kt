@@ -1,10 +1,9 @@
-package com.example.datalayer.remote
+package com.example.datalayer.remote.repository
 
 import com.example.datalayer.RetrofitFactory
-import kotlinx.coroutines.CoroutineScope
+import com.example.datalayer.remote.service.RestApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import org.json.JSONObject
 
 class WeatherRepository {
 

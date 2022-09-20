@@ -1,11 +1,12 @@
-package com.example.datalayer
+package com.app.maptranslation
 
 import android.content.Context
-import androidx.room.Room
-import com.example.datalayer.local.RegionsDBRepository
-import com.example.datalayer.local.RegionsDatabase
-import com.example.datalayer.local.RoomDataSource
+import com.example.datalayer.local.repository.RegionsDBRepository
+import com.example.datalayer.local.database.RegionsDatabase
+import com.example.datalayer.local.datasource.RegionsRoomDataSource
+import com.example.domain.usecases.RegionsDBRepositoryImpl
 import dagger.Module
+import androidx.room.Room
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,11 +16,11 @@ import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RemoteTasksDataSource
+annotation class RemoteDataSource
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class LocalRoomDataSource
+annotation class LocalRegionsRoomDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,10 +28,10 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideTasksRepository(
-        @LocalRoomDataSource localDataSource: RoomDataSource
+    fun provideRegionsDBRepository(
+        @LocalRegionsRoomDataSource localDataSource: RegionsRoomDataSource
     ): RegionsDBRepository {
-        return RegionsDBRepository(localDataSource)
+        return RegionsDBRepositoryImpl(localDataSource)
     }
 }
 
@@ -39,12 +40,12 @@ object RepositoryModule {
 object DataSourceModule {
 
     @Singleton
-    @LocalRoomDataSource
+    @LocalRegionsRoomDataSource
     @Provides
-    fun provideRoomDataSource(
+    fun provideRegionsRoomDataSource(
         database: RegionsDatabase
-    ): RoomDataSource {
-        return RoomDataSource(database.regionDao())
+    ): RegionsRoomDataSource {
+        return RegionsRoomDataSource(database.regionDao())
     }
 }
 
@@ -54,7 +55,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDataBase(@ApplicationContext context: Context): RegionsDatabase {
+    fun provideRegionsDataBase(@ApplicationContext context: Context): RegionsDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             RegionsDatabase::class.java,

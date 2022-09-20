@@ -1,7 +1,6 @@
-package com.example.datalayer.remote
+package com.example.datalayer.remote.service
 
-import com.google.gson.JsonObject
-import org.json.JSONObject
+import com.example.datalayer.remote.model.Weather
 import retrofit2.http.GET
 import retrofit2.http.Query
 

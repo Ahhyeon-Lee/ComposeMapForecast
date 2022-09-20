@@ -1,12 +1,11 @@
-package com.app.maptranslation.viewmodels
+package com.app.maptranslation.viewmodel
 
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datalayer.local.ExcelReadHelper
-import com.example.datalayer.local.RegionsDBRepository
-import com.example.datalayer.remote.WeatherRepository
+import com.example.datalayer.local.repository.RegionsDBRepository
+import com.example.datalayer.remote.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,9 +22,5 @@ class MapScreenViewModel @Inject constructor(
 
     fun checkRegionsData(applicationContext: Context) {
         regionsDBRepository.checkRegionsDbData(applicationContext)
-    }
-
-    fun readRegionsExcelFile(_context:Context) {
-        ExcelReadHelper.readExcel(_context, "regions.xls")
     }
 }

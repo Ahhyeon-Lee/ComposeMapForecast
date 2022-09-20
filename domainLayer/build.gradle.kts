@@ -36,4 +36,13 @@ dependencies {
     testImplementation(Libraries.Test.JUNIT)
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
+
+    // ExcelReader
+    implementation(Libraries.ExcelReader.JEXCEL)
+
+    // Coroutine
+    implementation(Libraries.Coroutine.COROUTINE_ANDROID)
+
+    implementation(project(":dataLayer"))
+    implementation(project(":util"))
 }

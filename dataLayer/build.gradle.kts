@@ -38,27 +38,22 @@ dependencies {
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
 
-    // Network
-    implementation(Libraries.Retrofit.RETROFIT)
-    implementation(Libraries.Retrofit.CONVERTER_GSON)
-    implementation(Libraries.Retrofit.CONVERTER_SCALARS)
-    implementation(Libraries.Retrofit.OKHTTP_LOGGING)
+    // ExcelReader
+    implementation(Libraries.ExcelReader.JEXCEL)
 
     // Coroutine
     implementation(Libraries.Coroutine.COROUTINE_ANDROID)
-    implementation(Libraries.Coroutine.FLOW_ADAPTER)
-
-    // Hilt
-    implementation(Libraries.Hilt.HILT_ANDROID)
-    kapt(Libraries.Hilt.HILT_COMPILER)
 
     // Room
     implementation(Libraries.Room.ROOM_RUNTIME)
     kapt(Libraries.Room.ROOM_COMPILER)
     implementation(Libraries.Room.ROOM_KTX)
 
-    // ExcelReader
-    implementation(Libraries.ExcelReader.JEXCEL)
+    // Network
+    implementation(Libraries.Retrofit.RETROFIT)
+    implementation(Libraries.Retrofit.CONVERTER_GSON)
+    implementation(Libraries.Retrofit.CONVERTER_SCALARS)
+    implementation(Libraries.Retrofit.OKHTTP_LOGGING)
 
     implementation(project(":util"))
 }

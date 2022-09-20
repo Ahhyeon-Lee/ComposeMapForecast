@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import com.app.maptranslation.composables.MyApp
+import com.app.maptranslation.composable.MyApp
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 

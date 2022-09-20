@@ -1,4 +1,4 @@
-package com.example.datalayer.remote
+package com.example.datalayer.remote.model
 
 import com.google.gson.annotations.SerializedName
 import org.json.JSONObject

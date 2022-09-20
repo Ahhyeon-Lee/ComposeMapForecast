@@ -1,4 +1,4 @@
-package com.example.datalayer.local
+package com.example.datalayer.local.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -16,13 +16,3 @@ data class RegionRowEntity(
 ) {
     @PrimaryKey(autoGenerate = true) var id:Long = 0
 }
-
-data class Regions(
-    val city:String,
-    val gu:String,
-    val dong:String,
-    val nx:String,
-    val ny:String,
-    val longtitude:String,
-    val latitude:String
-)

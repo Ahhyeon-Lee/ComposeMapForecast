@@ -1,13 +1,15 @@
-package com.example.datalayer.local
+package com.example.datalayer.local.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.datalayer.local.model.RegionRowEntity
+import com.example.datalayer.local.dao.RegionsRoomDao
 
 @Database(entities = [RegionRowEntity::class], version = 1)
 abstract class RegionsDatabase : RoomDatabase() {
-    abstract fun regionDao() : RoomDao
+    abstract fun regionDao() : RegionsRoomDao
 
     companion object {
 

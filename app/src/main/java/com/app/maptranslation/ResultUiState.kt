@@ -1,4 +1,4 @@
-package com.example.util
+package com.app.maptranslation
 
 sealed class ResultUiState<out R> {
 
@@ -8,13 +8,6 @@ sealed class ResultUiState<out R> {
     data class Error(val exception: Exception) : ResultUiState<Nothing>()
     object Finish : ResultUiState<Nothing>()
 
-//    fun toString(): String {
-//        return when (this) {
-//            is Success<*> -> "Success[data=$data]"
-//            is Error -> "Error[exception=$exception]"
-//            is Loading ->
-//        }
-//    }
 }
 
 /**

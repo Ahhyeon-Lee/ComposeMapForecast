@@ -67,15 +67,22 @@ dependencies {
     debugImplementation(Libraries.Compose.COMPOSE_UI_TOOLING)
     debugImplementation(Libraries.Compose.COMPOSE_MANIFEST)
 
+    // Coroutine
+    implementation(Libraries.Coroutine.COROUTINE_ANDROID)
+
+    // Room
+    implementation(Libraries.Room.ROOM_RUNTIME)
+    kapt(Libraries.Room.ROOM_COMPILER)
+    implementation(Libraries.Room.ROOM_KTX)
+
     // MapView
     implementation(Libraries.Google.MAP)
     implementation(Libraries.Google.LOCATION)
 
+    // Hilt
     implementation(Libraries.Hilt.HILT_ANDROID)
     implementation(Libraries.Hilt.HILT_VIEWMODEL)
     kapt(Libraries.Hilt.HILT_COMPILER)
-
-    implementation(Libraries.Coroutine.COROUTINE_ANDROID)
 
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
