@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 plugins {
     id(Plugins.ANDROID_LIBRARY)
     id(Plugins.JETBRAINS_ANDROID)
+    kotlin(Plugins.KAPT)
 }
 
 android {
@@ -42,6 +45,16 @@ dependencies {
 
     // Coroutine
     implementation(Libraries.Coroutine.COROUTINE_ANDROID)
+
+    // Hilt
+    implementation(Libraries.Hilt.HILT_ANDROID)
+    implementation(Libraries.Hilt.HILT_VIEWMODEL)
+    kapt(Libraries.Hilt.HILT_COMPILER)
+
+    // Room
+    implementation(Libraries.Room.ROOM_RUNTIME)
+    kapt(Libraries.Room.ROOM_COMPILER)
+    implementation(Libraries.Room.ROOM_KTX)
 
     implementation(project(":dataLayer"))
     implementation(project(":util"))
