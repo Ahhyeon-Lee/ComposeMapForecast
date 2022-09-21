@@ -1,5 +1,6 @@
 package com.app.maptranslation.composable
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background

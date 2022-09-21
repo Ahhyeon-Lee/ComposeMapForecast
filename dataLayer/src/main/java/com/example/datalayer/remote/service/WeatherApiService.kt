@@ -4,7 +4,7 @@ import com.example.datalayer.remote.model.Weather
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RestApiService {
+interface WeatherApiService {
 
     companion object {
         const val weather_api_key= "HhI0V8a2pV09ssFf6Ui+fn9LCPwa05YgfDHax8PHxs8T0nhmhIir/nuoEptT0R0xBJv/X5rF+MrOyEYzuKej6w=="
