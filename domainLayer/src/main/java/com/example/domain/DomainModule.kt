@@ -1,12 +1,13 @@
-package com.app.maptranslation
+package com.example.domain
 
 import android.content.Context
-import com.example.datalayer.local.repository.RegionsDBRepository
+import com.example.domain.repository.RegionsDBRepository
 import com.example.datalayer.local.database.RegionsDatabase
 import com.example.datalayer.local.datasource.RegionsRoomDataSource
-import com.example.domain.usecases.RegionsDBRepositoryImpl
+import com.example.domain.repository.RegionsDBRepositoryImpl
 import dagger.Module
 import androidx.room.Room
+import com.example.domain.usecase.map.CheckRegionsDbDataUsecase
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -14,13 +15,18 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class RemoteDataSource
+@Module
+@InstallIn(SingletonComponent::class)
+object UsecaseModule {
 
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class LocalRegionsRoomDataSource
+    @Singleton
+    @Provides
+    fun provideCheckRegionsDbDataUsecase(
+        regionsDBRepository: RegionsDBRepository
+    ): CheckRegionsDbDataUsecase {
+        return CheckRegionsDbDataUsecase(regionsDBRepository)
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,7 +35,7 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideRegionsDBRepository(
-        @LocalRegionsRoomDataSource localDataSource: RegionsRoomDataSource
+        localDataSource: RegionsRoomDataSource
     ): RegionsDBRepository {
         return RegionsDBRepositoryImpl(localDataSource)
     }
@@ -40,7 +46,6 @@ object RepositoryModule {
 object DataSourceModule {
 
     @Singleton
-    @LocalRegionsRoomDataSource
     @Provides
     fun provideRegionsRoomDataSource(
         database: RegionsDatabase
@@ -55,7 +60,9 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideRegionsDataBase(@ApplicationContext context: Context): RegionsDatabase {
+    fun provideRegionsDataBase(
+        @ApplicationContext context: Context
+    ): RegionsDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             RegionsDatabase::class.java,

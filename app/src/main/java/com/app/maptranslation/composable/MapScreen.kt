@@ -3,7 +3,11 @@ package com.app.maptranslation.composable
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -33,12 +37,18 @@ import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
 import com.app.maptranslation.viewmodel.MapScreenViewModel
+import com.example.domain.model.Regions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 
 const val HOME_SCREEN = "HomeScreen"
 const val MAP_SCREEN = "MapScreen"
@@ -59,7 +69,7 @@ fun MyApp(
             HomeScreen(navController, mapViewModel)
         }
         composable(MAP_SCREEN) {
-            MapScreen(navController)
+            MapScreen(navController, mapViewModel)
         }
         composable(MAP_HISTORY_SCREEN) {
 
@@ -89,6 +99,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(onClick = {
+                        viewModel.checkRegionsData(context.applicationContext)
                         navController.navigate(MAP_SCREEN)
                     }) {
                         Text(text = "지도")
@@ -130,7 +141,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
 }
 
 @Composable
-fun MapScreen(navController: NavController) {
+fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
         GoogleMapBox()
     }
@@ -140,57 +151,92 @@ fun MapScreen(navController: NavController) {
             .padding(20.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-        TextFieldBox(navController)
+        TextFieldBox(navController, viewModel)
     }
 }
 
 @Composable
-fun TextFieldBox(navController: NavController) {
-    val (text, setValue) = remember { mutableStateOf("") }
-    Surface(shape = CircleShape) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 5.dp)
-        ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    tint = Color.DarkGray,
-                    contentDescription = "BackBtn")
+fun TextFieldBox(navController: NavController, viewModel: MapScreenViewModel) {
+    val (text, setText) = remember { mutableStateOf("") }
+    val (clicked, setClicked) = remember { mutableStateOf(false) }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(shape = CircleShape, elevation = 5.dp) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 5.dp)
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        tint = Color.DarkGray,
+                        contentDescription = "BackBtn")
+                }
+                TextField(
+                    value = text,
+                    onValueChange = setText,
+                    placeholder = { Text(text = "시, 구, 동 검색") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(Color.White),
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.DarkGray,
+                        backgroundColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    singleLine = true
+                )
+                IconButton(
+                    modifier = Modifier.wrapContentSize(),
+                    onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_mic_24),
+                        tint = colorResource(id = R.color.sky),
+                        contentDescription = "VoiceBtn"
+                    )
+                }
+                IconButton(
+                    modifier = Modifier.wrapContentSize(),
+                    onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        tint = colorResource(id = R.color.sky),
+                        contentDescription = "SearchBtn"
+                    )
+                }
             }
-            TextField(
-                value = text,
-                onValueChange = setValue,
-                placeholder = { Text(text = "시, 구, 동 검색") },
-                modifier = Modifier
-                    .width(180.dp)
-                    .background(Color.White),
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.DarkGray,
-                    backgroundColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                singleLine = true
+        }
+        if (text.isNotEmpty()) {
+            DropDownLazyColumn(
+                viewModel.getRegionsList(text).takeIf {
+                    it.isNotEmpty()
+                } ?: listOf(Regions("검색 결과가 없습니다."))
             )
-            IconButton(
-                modifier = Modifier.wrapContentSize(),
-                onClick = { /*TODO*/ }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_mic_24),
-                    tint = colorResource(id = R.color.sky),
-                    contentDescription = "VoiceBtn"
-                )
-            }
-            IconButton(
-                modifier = Modifier.wrapContentSize(),
-                onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    tint = colorResource(id = R.color.sky),
-                    contentDescription = "SearchBtn"
-                )
+        }
+    }
+}
+
+@Composable
+fun DropDownLazyColumn(regionsList:List<Regions>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .requiredHeightIn(max = 150.dp)
+            .padding(horizontal = 40.dp)
+            .background(Color.White),
+        horizontalAlignment = Alignment.Start
+    ) {
+        items(regionsList) { region ->
+            Text(
+                text = "${region.city} ${region.gu} ${region.dong}",
+                modifier = Modifier.padding(10.dp)
+            )
+            if (regionsList.indexOf(region) != regionsList.lastIndex) {
+                Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
             }
         }
     }
@@ -267,12 +313,14 @@ fun HomeScreenPreview() {
 @Composable
 fun MapScreenPreview() {
     val navController = rememberNavController()
-    MapScreen(navController)
+    val mapViewModel:MapScreenViewModel = viewModel()
+    MapScreen(navController, mapViewModel)
 }
 
 @Preview
 @Composable
 fun TextFieldAreaPreview() {
     val navController = rememberNavController()
-    TextFieldBox(navController)
+    val mapViewModel:MapScreenViewModel = viewModel()
+    TextFieldBox(navController, mapViewModel)
 }
