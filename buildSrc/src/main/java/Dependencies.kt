@@ -32,6 +32,7 @@ object Libraries {
     object Compose {
         const val COMPOSE_UI = "androidx.compose.ui:ui:${Versions.COMPOSE}"
         const val COMPOSE_MATERIAL = "androidx.compose.material:material:${Versions.COMPOSE}"
+        const val COMPOSE_MATERIAL_ICONS = "androidx.compose.material:material-icons-extended:${Versions.COMPOSE}"
         const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}"
         const val COMPOSE_VIEW_MODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01"
         const val COMPOSE_NAVIGATION = "androidx.navigation:navigation-compose:2.5.1"

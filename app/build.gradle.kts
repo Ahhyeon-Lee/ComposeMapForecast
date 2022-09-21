@@ -60,6 +60,7 @@ dependencies {
     // Compose
     implementation(Libraries.Compose.COMPOSE_UI)
     implementation(Libraries.Compose.COMPOSE_MATERIAL)
+    implementation(Libraries.Compose.COMPOSE_MATERIAL_ICONS)
     implementation(Libraries.Compose.COMPOSE_PREVIEW)
     implementation(Libraries.Compose.COMPOSE_VIEW_MODEL)
     implementation(Libraries.Compose.COMPOSE_NAVIGATION)

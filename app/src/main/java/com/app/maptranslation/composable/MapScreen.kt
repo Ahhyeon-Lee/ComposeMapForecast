@@ -65,7 +65,7 @@ fun MyApp(
 
         }
         composable(TRANSLATE_SCREEN) {
-
+            TranslateScreen()
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
 
