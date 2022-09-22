@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RegionsRoomDao {
     @Query("SELECT * FROM regions")
-    fun getAll() : Flow<List<RegionRowEntity>>
+    suspend fun getAll() : List<RegionRowEntity>
 
     @Insert
     suspend fun insert(vararg region : RegionRowEntity)

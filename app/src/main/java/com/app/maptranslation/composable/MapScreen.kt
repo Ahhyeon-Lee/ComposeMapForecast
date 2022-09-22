@@ -28,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.createBitmap
+import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +41,7 @@ import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.example.domain.model.Regions
+import com.example.domain.model.WeatherForecast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -127,7 +130,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                     }
                 }
                 Button(onClick = {
-                    viewModel.getWeatherInfo()
+                    viewModel.getWeatherInfo("57", "78","","")
                 }) {
                     Text(text = "ApiTest")
                 }
@@ -144,7 +147,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
 @Composable
 fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMapBox()
+        GoogleMapBox(viewModel)
     }
     Box(
         modifier = Modifier
@@ -157,9 +160,51 @@ fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
 }
 
 @Composable
+fun GoogleMapBox(viewModel: MapScreenViewModel) {
+    val map = rememberMapView()
+    viewModel.weatherState.latitude.toDouble()
+    viewModel.weatherState.longtitude.toDouble()
+
+
+    val processed = EmojiCompat.get().process("neutral face \uD83D\uDE10")
+
+    AndroidView(
+        factory = { map },
+        update = { mapView ->
+            mapView.getMapAsync { googleMap ->
+                val sydney = LatLng(
+                    viewModel.weatherState.latitude.toDouble(),
+                    viewModel.weatherState.longtitude.toDouble()
+                )
+                val dragListener = object : GoogleMap.OnMarkerDragListener {
+                    override fun onMarkerDrag(p0: Marker) { }
+
+                    override fun onMarkerDragEnd(p0: Marker) {
+                        val position = p0.position
+                        Log.i("아현", "$position")
+                    }
+
+                    override fun onMarkerDragStart(p0: Marker) { }
+
+                }
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .draggable(true)
+                        .position(sydney)
+//                        .icon(test)
+                        .title("Marker in Sydney")
+                )
+                googleMap.setOnMarkerDragListener(dragListener)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+            }
+        }
+    )
+}
+
+@Composable
 fun TextFieldBox(navController: NavController, viewModel: MapScreenViewModel) {
     val (text, setText) = remember { mutableStateOf("") }
-    val (clicked, setClicked) = remember { mutableStateOf(false) }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -214,14 +259,15 @@ fun TextFieldBox(navController: NavController, viewModel: MapScreenViewModel) {
             DropDownLazyColumn(
                 viewModel.getRegionsList(text).takeIf {
                     it.isNotEmpty()
-                } ?: listOf(Regions("검색 결과가 없습니다."))
+                } ?: listOf(Regions("검색 결과가 없습니다.")),
+                viewModel
             )
         }
     }
 }
 
 @Composable
-fun DropDownLazyColumn(regionsList:List<Regions>) {
+fun DropDownLazyColumn(regionsList:List<Regions>, viewModel: MapScreenViewModel) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -232,47 +278,26 @@ fun DropDownLazyColumn(regionsList:List<Regions>) {
         horizontalAlignment = Alignment.Start
     ) {
         items(regionsList) { region ->
-            Text(
-                text = "${region.city} ${region.gu} ${region.dong}",
-                modifier = Modifier.padding(10.dp)
-            )
-            if (regionsList.indexOf(region) != regionsList.lastIndex) {
-                Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
-            }
+            DropDownItem(region = region, regionsList = regionsList, viewModel)
         }
     }
 }
 
 @Composable
-fun GoogleMapBox() {
-    val map = rememberMapView()
-
-    AndroidView(
-        factory = { map },
-        update = { mapView ->
-            mapView.getMapAsync { googleMap ->
-                val sydney = LatLng(-34.0, 151.0)
-                val dragListener = object : GoogleMap.OnMarkerDragListener {
-                    override fun onMarkerDrag(p0: Marker) { }
-
-                    override fun onMarkerDragEnd(p0: Marker) {
-                        val position = p0.position
-                        Log.i("아현", "$position")
-                    }
-
-                    override fun onMarkerDragStart(p0: Marker) { }
-
-                }
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .draggable(true)
-                        .position(sydney).title("Marker in Sydney")
-                )
-                googleMap.setOnMarkerDragListener(dragListener)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-            }
+fun DropDownItem(region:Regions, regionsList: List<Regions>, viewModel: MapScreenViewModel) {
+    Surface(
+        modifier = Modifier.clickable {
+            viewModel.getWeatherInfo(region.nx, region.ny, region.longtitude, region.latitude)
         }
-    )
+    ) {
+        Text(
+            text = "${region.city} ${region.gu} ${region.dong}",
+            modifier = Modifier.padding(10.dp)
+        )
+        if (regionsList.indexOf(region) != regionsList.lastIndex) {
+            Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
+        }
+    }
 }
 
 @Composable

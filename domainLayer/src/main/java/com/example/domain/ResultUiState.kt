@@ -1,11 +1,11 @@
-package com.app.maptranslation
+package com.example.domain
 
 sealed class ResultUiState<out R> {
 
     object UnInitialize : ResultUiState<Nothing>()
     object Loading : ResultUiState<Nothing>()
     data class Success<out T>(val data: T) : ResultUiState<T>()
-    data class Error(val exception: Exception) : ResultUiState<Nothing>()
+    object Error : ResultUiState<Nothing>()
     object Finish : ResultUiState<Nothing>()
 
 }

@@ -6,7 +6,7 @@ import com.example.domain.repository.RegionsDBRepository
 import com.example.domain.repository.RegionsDBRepositoryImpl
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.repository.WeatherRepositoryImpl
-import com.example.domain.usecase.map.CheckRegionsDbDataUsecase
+import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import dagger.Module
 import dagger.Provides
@@ -22,13 +22,13 @@ object UsecaseModule {
     @Provides
     fun provideCheckRegionsDbDataUsecase(
         regionsDBRepository: RegionsDBRepository
-    ): CheckRegionsDbDataUsecase {
-        return CheckRegionsDbDataUsecase(regionsDBRepository)
+    ): CheckRegionsDbDataUseCase {
+        return CheckRegionsDbDataUseCase(regionsDBRepository)
     }
 
     @Singleton
     @Provides
-    fun provideGetWeatherInfoUsecaseUsecase(
+    fun provideGetWeatherInfoUsecase(
         weatherRepository : WeatherRepository
     ): GetWeatherInfoUsecase {
         return GetWeatherInfoUsecase(weatherRepository)

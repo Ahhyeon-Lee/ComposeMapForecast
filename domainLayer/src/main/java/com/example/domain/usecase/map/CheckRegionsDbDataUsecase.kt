@@ -8,47 +8,42 @@ import com.example.util.ExcelReadHelper
 import jxl.Cell
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class CheckRegionsDbDataUsecase(
+class CheckRegionsDbDataUseCase(
     private val regionsDBRepository: RegionsDBRepository
 ) {
-    suspend fun invoke(applicationContext: Context, callBack:(List<Regions>) -> Unit) {
-        regionsDBRepository.checkRegionsDbData()
-            .onEach {
-                if (it.isEmpty()) {
-                    val regionsRowList = ExcelReadHelper.readExcel(applicationContext, "regions.xls")
-                    val list = regionsRowList.map { cells ->
-                        insertRegions(cells)
-                        Regions(
-                            cells[0].contents,
-                            cells[1].contents,
-                            cells[2].contents,
-                            cells[3].contents,
-                            cells[4].contents,
-                            cells[5].contents,
-                            cells[6].contents
-                        )
-                    }
-                    callBack.invoke(list)
-                } else {
-                    val list = it.map {
-                        Regions(
-                            city = it.city,
-                            gu = it.gu ?: "",
-                            dong = it.dong ?: "",
-                            nx = it.nx,
-                            ny = it.ny,
-                            latitude = it.latitude,
-                            longtitude = it.longtitude
-                        )
-                    }
-                    callBack.invoke(list)
+    suspend fun invoke(applicationContext: Context) : List<Regions> {
+        return with(regionsDBRepository.checkRegionsDbData()) {
+            if (isEmpty()) {
+                val regionsRowList = ExcelReadHelper.readExcel(applicationContext, "regions.xls")
+
+                regionsRowList.map { cells ->
+                    insertRegions(cells)
+                    Regions(
+                        cells[0].contents,
+                        cells[1].contents,
+                        cells[2].contents,
+                        cells[3].contents,
+                        cells[4].contents,
+                        cells[5].contents,
+                        cells[6].contents
+                    )
+                }
+            } else {
+                map {
+                    Regions(
+                        city = it.city,
+                        gu = it.gu ?: "",
+                        dong = it.dong ?: "",
+                        nx = it.nx,
+                        ny = it.ny,
+                        latitude = it.latitude,
+                        longtitude = it.longtitude
+                    )
                 }
             }
-            .launchIn(CoroutineScope(Dispatchers.Default))
+        }
     }
 
     private fun insertRegions(cell:Array<Cell>) = CoroutineScope(Dispatchers.IO).launch {

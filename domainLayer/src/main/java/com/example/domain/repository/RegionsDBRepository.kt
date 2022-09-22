@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RegionsDBRepository {
 
-    suspend fun checkRegionsDbData() : Flow<List<RegionRowEntity>>
+    suspend fun checkRegionsDbData() : List<RegionRowEntity>
 
     suspend fun insertRegions(regionRowEntity: RegionRowEntity)
 

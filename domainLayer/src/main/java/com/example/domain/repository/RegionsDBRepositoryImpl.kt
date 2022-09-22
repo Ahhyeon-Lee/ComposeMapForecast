@@ -15,7 +15,7 @@ class RegionsDBRepositoryImpl(
     private val roomDataSource: RegionsRoomDataSource
 ) : RegionsDBRepository {
 
-    override suspend fun checkRegionsDbData(): Flow<List<RegionRowEntity>> {
+    override suspend fun checkRegionsDbData(): List<RegionRowEntity> {
         return roomDataSource.getRegionsData()
     }
 

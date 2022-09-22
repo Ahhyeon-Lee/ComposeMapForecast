@@ -53,6 +53,8 @@ dependencies {
     implementation(Libraries.AndroidX.LIFECYCLE)
     implementation(Libraries.AndroidX.ACTIVITY)
     implementation(Libraries.AndroidX.CORE)
+    implementation(Libraries.AndroidX.EMOJI)
+    implementation(Libraries.AndroidX.EMOJI_VIEW)
     testImplementation(Libraries.Test.JUNIT)
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
