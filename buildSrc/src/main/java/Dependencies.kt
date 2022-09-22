@@ -14,6 +14,7 @@ object Versions {
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "3.11.0"
     const val ROOM = "2.4.3"
+    const val EMOJI = "1.0.0-alpha03"
 }
 
 object Libraries {
@@ -27,6 +28,8 @@ object Libraries {
 
         const val JUNIT = "androidx.test.ext:junit:${Versions.JUNIT}"
         const val ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO_CORE}"
+        const val EMOJI = "androidx.emoji2:emoji2:${Versions.EMOJI}"
+        const val EMOJI_VIEW = "androidx.emoji2:emoji2-views:${Versions.EMOJI}"
     }
 
     object Compose {
