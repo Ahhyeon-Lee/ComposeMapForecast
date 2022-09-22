@@ -4,23 +4,23 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datalayer.remote.repository.WeatherRepository
 import com.example.domain.model.Regions
-import com.example.domain.repository.RegionsDBRepository
 import com.example.domain.usecase.map.CheckRegionsDbDataUsecase
+import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MapScreenViewModel @Inject constructor(
-    private val checkRegionsDbDataUsecase: CheckRegionsDbDataUsecase
+    private val checkRegionsDbDataUsecase: CheckRegionsDbDataUsecase,
+    private val getWeatherInfoUsecase : GetWeatherInfoUsecase
 ) : ViewModel() {
 
     private var regionsList: List<Regions> = listOf()
 
     fun getWeatherInfo() = viewModelScope.launch {
-        val result = WeatherRepository().getWeatherInfo("58", "75", "20220919", "0600")
+        val result = getWeatherInfoUsecase.invoke("58", "75", "20220919", "0600")
         Log.i("아현", "$result")
     }
 

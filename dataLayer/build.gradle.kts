@@ -52,8 +52,13 @@ dependencies {
     // Network
     implementation(Libraries.Retrofit.RETROFIT)
     implementation(Libraries.Retrofit.CONVERTER_GSON)
-    implementation(Libraries.Retrofit.CONVERTER_SCALARS)
+    implementation(Libraries.Retrofit.OKHTTP)
     implementation(Libraries.Retrofit.OKHTTP_LOGGING)
+
+    // Hilt
+    implementation(Libraries.Hilt.HILT_ANDROID)
+    implementation(Libraries.Hilt.HILT_VIEWMODEL)
+    kapt(Libraries.Hilt.HILT_COMPILER)
 
     implementation(project(":util"))
 }

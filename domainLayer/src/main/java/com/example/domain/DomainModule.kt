@@ -1,18 +1,17 @@
 package com.example.domain
 
-import android.content.Context
-import com.example.domain.repository.RegionsDBRepository
-import com.example.datalayer.local.database.RegionsDatabase
 import com.example.datalayer.local.datasource.RegionsRoomDataSource
+import com.example.datalayer.remote.datasource.WeatherApiDataSource
+import com.example.domain.repository.RegionsDBRepository
 import com.example.domain.repository.RegionsDBRepositoryImpl
-import dagger.Module
-import androidx.room.Room
+import com.example.domain.repository.WeatherRepository
+import com.example.domain.repository.WeatherRepositoryImpl
 import com.example.domain.usecase.map.CheckRegionsDbDataUsecase
+import com.example.domain.usecase.map.GetWeatherInfoUsecase
+import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -25,6 +24,14 @@ object UsecaseModule {
         regionsDBRepository: RegionsDBRepository
     ): CheckRegionsDbDataUsecase {
         return CheckRegionsDbDataUsecase(regionsDBRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetWeatherInfoUsecaseUsecase(
+        weatherRepository : WeatherRepository
+    ): GetWeatherInfoUsecase {
+        return GetWeatherInfoUsecase(weatherRepository)
     }
 }
 
@@ -39,34 +46,12 @@ object RepositoryModule {
     ): RegionsDBRepository {
         return RegionsDBRepositoryImpl(localDataSource)
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DataSourceModule {
 
     @Singleton
     @Provides
-    fun provideRegionsRoomDataSource(
-        database: RegionsDatabase
-    ): RegionsRoomDataSource {
-        return RegionsRoomDataSource(database.regionDao())
-    }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-
-    @Singleton
-    @Provides
-    fun provideRegionsDataBase(
-        @ApplicationContext context: Context
-    ): RegionsDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            RegionsDatabase::class.java,
-            "regionsDb"
-        ).build()
+    fun provideWeatherRepository(
+        weatherApiDataSource: WeatherApiDataSource
+    ): WeatherRepository {
+        return WeatherRepositoryImpl(weatherApiDataSource)
     }
 }

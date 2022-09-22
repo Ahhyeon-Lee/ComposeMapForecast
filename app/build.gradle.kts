@@ -85,6 +85,12 @@ dependencies {
     implementation(Libraries.Hilt.HILT_VIEWMODEL)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
+    // Network
+    implementation(Libraries.Retrofit.RETROFIT)
+    implementation(Libraries.Retrofit.CONVERTER_GSON)
+    implementation(Libraries.Retrofit.OKHTTP)
+    implementation(Libraries.Retrofit.OKHTTP_LOGGING)
+
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
 }

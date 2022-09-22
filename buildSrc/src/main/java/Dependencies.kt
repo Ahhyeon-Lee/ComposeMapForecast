@@ -61,7 +61,8 @@ object Libraries {
     object Retrofit {
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
         const val CONVERTER_GSON = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
-        const val CONVERTER_SCALARS = "com.squareup.retrofit2:converter-scalars:${Versions.RETROFIT}"
+        const val CONVERTER_SCALARS = "com.squareup.retrofit2:co}nverter-scalars:${Versions.RETROFIT}"
+        const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
         const val OKHTTP_LOGGING = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     }
 
