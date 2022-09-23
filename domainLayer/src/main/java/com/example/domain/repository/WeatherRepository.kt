@@ -7,6 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherRepository {
     suspend fun getWeatherInfo(
         nx:String, ny:String, date:String, time:String
-    )
-    : Flow<NetworkWeatherForecastData>
+    ): Flow<NetworkWeatherForecastData>
 }

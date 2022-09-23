@@ -6,6 +6,7 @@ import com.example.domain.repository.RegionsDBRepository
 import com.example.domain.repository.RegionsDBRepositoryImpl
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.repository.WeatherRepositoryImpl
+import com.example.domain.usecase.GetDateTimeInfoUseCase
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import dagger.Module
@@ -18,7 +19,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object UsecaseModule {
 
-    @Singleton
     @Provides
     fun provideCheckRegionsDbDataUsecase(
         regionsDBRepository: RegionsDBRepository
@@ -26,13 +26,16 @@ object UsecaseModule {
         return CheckRegionsDbDataUseCase(regionsDBRepository)
     }
 
-    @Singleton
     @Provides
     fun provideGetWeatherInfoUsecase(
-        weatherRepository : WeatherRepository
+        weatherRepository : WeatherRepository,
+        dateTimeInfoUseCase: GetDateTimeInfoUseCase
     ): GetWeatherInfoUsecase {
-        return GetWeatherInfoUsecase(weatherRepository)
+        return GetWeatherInfoUsecase(weatherRepository, dateTimeInfoUseCase)
     }
+
+    @Provides
+    fun provideGetDateTimeInfoUseCase() : GetDateTimeInfoUseCase = GetDateTimeInfoUseCase()
 }
 
 @Module

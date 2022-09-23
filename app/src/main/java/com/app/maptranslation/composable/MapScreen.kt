@@ -1,11 +1,9 @@
 package com.app.maptranslation.composable
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,8 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.createBitmap
-import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,18 +37,13 @@ import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.example.domain.model.Regions
-import com.example.domain.model.WeatherForecast
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 
 const val HOME_SCREEN = "HomeScreen"
 const val MAP_SCREEN = "MapScreen"
@@ -130,7 +121,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                     }
                 }
                 Button(onClick = {
-                    viewModel.getWeatherInfo("57", "78","","")
+//                    viewModel.getWeatherInfo("57", "78","","")
                 }) {
                     Text(text = "ApiTest")
                 }
@@ -142,6 +133,13 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
             }
         }
     }
+}
+
+@Composable
+fun getLocation() {
+    val context = LocalContext.current
+    val locationManager = LocationServices.getFusedLocationProviderClient(context)
+
 }
 
 @Composable
@@ -162,19 +160,15 @@ fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
 @Composable
 fun GoogleMapBox(viewModel: MapScreenViewModel) {
     val map = rememberMapView()
-    viewModel.weatherState.latitude.toDouble()
-    viewModel.weatherState.longtitude.toDouble()
-
-
-    val processed = EmojiCompat.get().process("neutral face \uD83D\uDE10")
 
     AndroidView(
         factory = { map },
         update = { mapView ->
+            val weatherData = viewModel.weatherState
             mapView.getMapAsync { googleMap ->
-                val sydney = LatLng(
-                    viewModel.weatherState.latitude.toDouble(),
-                    viewModel.weatherState.longtitude.toDouble()
+                val location = LatLng(
+                    weatherData.latitude.toDouble(),
+                    weatherData.longtitude.toDouble()
                 )
                 val dragListener = object : GoogleMap.OnMarkerDragListener {
                     override fun onMarkerDrag(p0: Marker) { }
@@ -190,12 +184,12 @@ fun GoogleMapBox(viewModel: MapScreenViewModel) {
                 googleMap.addMarker(
                     MarkerOptions()
                         .draggable(true)
-                        .position(sydney)
-//                        .icon(test)
-                        .title("Marker in Sydney")
+                        .position(location)
+                        .icon(viewModel.drawBitmap(weatherData.icon))
+                        .title(weatherData.getMarkTitle())
                 )
                 googleMap.setOnMarkerDragListener(dragListener)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
             }
         }
     )
@@ -287,7 +281,7 @@ fun DropDownLazyColumn(regionsList:List<Regions>, viewModel: MapScreenViewModel)
 fun DropDownItem(region:Regions, regionsList: List<Regions>, viewModel: MapScreenViewModel) {
     Surface(
         modifier = Modifier.clickable {
-            viewModel.getWeatherInfo(region.nx, region.ny, region.longtitude, region.latitude)
+            viewModel.getWeatherInfo(region)
         }
     ) {
         Text(
