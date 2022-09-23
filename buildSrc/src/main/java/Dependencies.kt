@@ -15,6 +15,7 @@ object Versions {
     const val OKHTTP = "3.11.0"
     const val ROOM = "2.4.3"
     const val EMOJI = "1.0.0-alpha03"
+    const val LOTTIE = "5.2.0"
 }
 
 object Libraries {
@@ -37,11 +38,12 @@ object Libraries {
         const val COMPOSE_MATERIAL = "androidx.compose.material:material:${Versions.COMPOSE}"
         const val COMPOSE_MATERIAL_ICONS = "androidx.compose.material:material-icons-extended:${Versions.COMPOSE}"
         const val COMPOSE_PREVIEW = "androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}"
-        const val COMPOSE_VIEW_MODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01"
+        const val COMPOSE_VIEW_MODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
         const val COMPOSE_NAVIGATION = "androidx.navigation:navigation-compose:2.5.1"
         const val COMPOSE_MANIFEST = "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}"
         const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE}"
         const val COMPOSE_JUNIT = "androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}"
+        const val COMPOSE_LIVEDATA = "androidx.compose.runtime:runtime-livedata:${Versions.COMPOSE}"
     }
 
     object Google {
@@ -83,6 +85,10 @@ object Libraries {
         const val FASTEXCEL = "org.dhatim:fastexcel:0.12.3"
         const val FASTEXCEL_READER = "org.dhatim:fastexcel-reader:0.12.3"
         const val JEXCEL = "net.sourceforge.jexcelapi:jxl:2.6.12"
+    }
+
+    object Lottie {
+        const val LOTTIE_COMPOSE = "com.airbnb.android:lottie-compose:${Versions.LOTTIE}"
     }
 
 }

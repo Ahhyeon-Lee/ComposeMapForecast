@@ -26,16 +26,16 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContent {
-//            MyApp()
-//        }
+        setContent {
+            MyApp()
+        }
 //        applicationContext
 //
 //        Locale.getDefault().country
 //        val locale = Locale.getDefault().country
 //        Log.i("아현", "$locale")
 
-        setContentView(MainActivity().MyView(this))
+        //setContentView(MainActivity().MyView(this))
     }
 
     var NameOfFolder = "/TEST"

@@ -1,11 +1,9 @@
 package com.app.maptranslation.composable
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.createBitmap
 import androidx.emoji2.text.EmojiCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -40,19 +37,14 @@ import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
 import com.app.maptranslation.ui.theme.Map_translationTheme
 import com.app.maptranslation.viewmodel.MapScreenViewModel
+import com.app.maptranslation.viewmodel.TranslateViewModel
 import com.example.domain.model.Regions
-import com.example.domain.model.WeatherForecast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 
 const val HOME_SCREEN = "HomeScreen"
 const val MAP_SCREEN = "MapScreen"
@@ -62,7 +54,8 @@ const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
 
 @Composable
 fun MyApp(
-    mapViewModel: MapScreenViewModel = viewModel()
+    mapViewModel: MapScreenViewModel = viewModel(),
+    translateViewModel: TranslateViewModel = viewModel()
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -79,7 +72,7 @@ fun MyApp(
 
         }
         composable(TRANSLATE_SCREEN) {
-            TranslateScreen()
+            TranslateScreen(translateViewModel)
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
 

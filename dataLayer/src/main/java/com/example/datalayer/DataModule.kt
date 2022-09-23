@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.datalayer.local.database.AppDatabase
 import com.example.datalayer.local.datasource.RegionsRoomDataSource
+import com.example.datalayer.local.datasource.TranslateRoomDataSource
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
 import com.example.datalayer.remote.service.WeatherApiService
 import com.google.gson.Gson
@@ -38,6 +39,12 @@ object DataSourceModule {
     ): WeatherApiDataSource {
         return WeatherApiDataSource(apiService)
     }
+
+    @Singleton
+    @Provides
+    fun provideTranslateRoomDataSource(
+        database: AppDatabase
+    ): TranslateRoomDataSource = TranslateRoomDataSource(database.translateDao())
 }
 
 @Module

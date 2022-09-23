@@ -7,13 +7,13 @@ import java.io.IOException
 
 object ExcelReadHelper {
 
-    fun readExcel(_context: Context, _assetFileName: String): ArrayList<Array<Cell>> {
+    fun readExcel(_context: Context, _assetFileName: String, sheetNumber: Int = 0): ArrayList<Array<Cell>> {
         val cellList = arrayListOf<Array<Cell>>()
         try {
             val inputStream = _context.resources.assets.open(_assetFileName)
 
             val wb = Workbook.getWorkbook(inputStream)
-            val sheet = wb.getSheet(0)
+            val sheet = wb.getSheet(sheetNumber)
             val colTotal = sheet.columns
             val rowIndexStart = 1
             val rowTotal = sheet.getColumn(colTotal - 1).size
