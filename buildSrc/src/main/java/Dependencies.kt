@@ -14,7 +14,7 @@ object Versions {
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "3.11.0"
     const val ROOM = "2.4.3"
-    const val EMOJI = "1.0.0-alpha03"
+    const val PERMISSION = "0.26.4-beta"
 }
 
 object Libraries {
@@ -28,8 +28,6 @@ object Libraries {
 
         const val JUNIT = "androidx.test.ext:junit:${Versions.JUNIT}"
         const val ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO_CORE}"
-        const val EMOJI = "androidx.emoji2:emoji2:${Versions.EMOJI}"
-        const val EMOJI_VIEW = "androidx.emoji2:emoji2-views:${Versions.EMOJI}"
     }
 
     object Compose {
@@ -42,11 +40,13 @@ object Libraries {
         const val COMPOSE_MANIFEST = "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}"
         const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE}"
         const val COMPOSE_JUNIT = "androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}"
+        const val COMPOSE_MAPS = "com.google.maps.android:maps-compose:2.5.3"
     }
 
     object Google {
-        const val MAP = "com.google.android.gms:play-services-maps:18.1.0"
+        const val MAP = "com.google.android.gms:play-services-maps:18.0.2"
         const val LOCATION = "com.google.android.gms:play-services-location:20.0.0"
+        const val PERMISSION = "com.google.accompanist:accompanist-permissions:${Versions.PERMISSION}"
     }
 
     object Hilt {
