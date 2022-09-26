@@ -9,6 +9,7 @@ import com.example.domain.repository.WeatherRepository
 import com.example.domain.repository.WeatherRepositoryImpl
 import com.example.domain.repository.translate.LanguageRepository
 import com.example.domain.repository.translate.LanguageRepositoryImpl
+import com.example.domain.usecase.GetDateTimeInfoUseCase
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import com.example.domain.usecase.translate.GetLanguageCodeUseCase
@@ -23,7 +24,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object UsecaseModule {
 
-    @Singleton
     @Provides
     fun provideCheckRegionsDbDataUsecase(
         regionsDBRepository: RegionsDBRepository
@@ -31,25 +31,26 @@ object UsecaseModule {
         return CheckRegionsDbDataUseCase(regionsDBRepository)
     }
 
-    @Singleton
     @Provides
     fun provideGetWeatherInfoUsecase(
-        weatherRepository : WeatherRepository
+        weatherRepository : WeatherRepository,
+        dateTimeInfoUseCase: GetDateTimeInfoUseCase
     ): GetWeatherInfoUsecase {
-        return GetWeatherInfoUsecase(weatherRepository)
+        return GetWeatherInfoUsecase(weatherRepository, dateTimeInfoUseCase)
     }
 
-    @Singleton
     @Provides
     fun provideGetLanguageCodeUseCase(
         repository : LanguageRepository
     ): GetLanguageCodeUseCase = GetLanguageCodeUseCase(repository)
 
-    @Singleton
     @Provides
     fun provideGetLanguageTargetUseCase(
         repository : LanguageRepository
     ): GetLanguageTargetUseCase = GetLanguageTargetUseCase(repository)
+
+    @Provides
+    fun provideGetDateTimeInfoUseCase() : GetDateTimeInfoUseCase = GetDateTimeInfoUseCase()
 }
 
 @Module

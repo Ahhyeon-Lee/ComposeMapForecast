@@ -34,7 +34,7 @@ data class NetworkWeatherForecastData (
         @SerializedName("category"  ) var category  : String? = null,
         @SerializedName("fcstDate"  ) var fcstDate  : String? = null,
         @SerializedName("fcstTime"  ) var fcstTime  : String? = null,
-        @SerializedName("fcstValue" ) var fcstValue : String? = null,
+        @SerializedName("fcstValue" ) var fcstValue : String = "-1",
         @SerializedName("nx"        ) var nx        : Int?    = null,
         @SerializedName("ny"        ) var ny        : Int?    = null
     )

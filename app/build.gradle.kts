@@ -53,8 +53,7 @@ dependencies {
     implementation(Libraries.AndroidX.LIFECYCLE)
     implementation(Libraries.AndroidX.ACTIVITY)
     implementation(Libraries.AndroidX.CORE)
-    implementation(Libraries.AndroidX.EMOJI)
-    implementation(Libraries.AndroidX.EMOJI_VIEW)
+    implementation(Libraries.Google.PERMISSION)
     testImplementation(Libraries.Test.JUNIT)
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
@@ -67,6 +66,7 @@ dependencies {
     implementation(Libraries.Compose.COMPOSE_VIEW_MODEL)
     implementation(Libraries.Compose.COMPOSE_NAVIGATION)
     implementation(Libraries.Compose.COMPOSE_LIVEDATA)
+    implementation(Libraries.Compose.COMPOSE_MAPS)
     androidTestImplementation(Libraries.Compose.COMPOSE_JUNIT)
     debugImplementation(Libraries.Compose.COMPOSE_UI_TOOLING)
     debugImplementation(Libraries.Compose.COMPOSE_MANIFEST)
@@ -95,7 +95,6 @@ dependencies {
     implementation(Libraries.Retrofit.OKHTTP_LOGGING)
 
     implementation(Libraries.Lottie.LOTTIE_COMPOSE)
-    implementation("com.google.accompanist:accompanist-permissions:0.25.1")
 
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
