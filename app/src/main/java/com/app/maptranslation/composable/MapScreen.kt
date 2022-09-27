@@ -3,7 +3,6 @@ package com.app.maptranslation.composable
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,7 +30,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapScreenViewModel
-import com.app.maptranslation.viewmodel.TranslateViewModel
 import com.example.domain.model.Regions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -45,6 +43,7 @@ const val MAP_SCREEN = "MapScreen"
 const val MAP_HISTORY_SCREEN = "MapHistoryScreen"
 const val TRANSLATE_SCREEN = "TranslateScreen"
 const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
+const val CLOVA_TEST = "ClovaTest"
 
 @Composable
 fun MyApp(
@@ -69,6 +68,9 @@ fun MyApp(
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
 
+        }
+        composable(CLOVA_TEST) {
+            ClovaTest()
         }
     }
 }
@@ -125,6 +127,11 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                 }) {
                     Text(text = "번역 히스토리")
                 }
+            }
+            Button(onClick = {
+                navController.navigate(CLOVA_TEST)
+            }) {
+                Text(text = "클로바 테스트")
             }
         }
     }

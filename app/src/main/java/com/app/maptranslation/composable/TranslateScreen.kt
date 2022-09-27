@@ -14,12 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,7 +56,8 @@ fun TranslateScreen(
                 },
                 modifier = Modifier
                     .height(200.dp)
-                    .focusRequester(focusRequester = focusRequester)
+                    .focusRequester(focusRequester = focusRequester),
+                label = { Text(text = "텍스트 입력")}
             )
             SttRecognizer(sttViewModel, viewModel.selectSource.value.code)
         }
@@ -68,7 +67,7 @@ fun TranslateScreen(
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 50.dp),
             onClick = {
-                viewModel.translateText()
+                viewModel.translateText(sttViewModel.sourceLanguage.value)
                 focusManager.clearFocus()
             }) {
             Text(text = "번역")

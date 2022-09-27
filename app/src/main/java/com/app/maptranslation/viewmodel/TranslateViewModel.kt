@@ -6,7 +6,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.maptranslation.composable.RecognizeState
 import com.example.domain.model.LanguageCodeData
 import com.example.domain.model.LanguageTargetData
 import com.example.domain.model.TranslateState
@@ -14,7 +13,7 @@ import com.example.domain.usecase.translate.GetLanguageCodeUseCase
 import com.example.domain.usecase.translate.GetLanguageTargetUseCase
 import com.example.domain.usecase.translate.TranslateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -81,9 +80,9 @@ class TranslateViewModel @Inject constructor(
         }
     }
 
-    fun translateText() = viewModelScope.launch {
-        if(sourceText.value.isEmpty()) return@launch
-        translateUseCase.invoke(selectSource.value.code, selectTarget.value.code, sourceText.value)
+    fun translateText(text: String) = viewModelScope.launch {
+        if(text.isEmpty()) return@launch
+        translateUseCase.invoke(selectSource.value.code, selectTarget.value.code, text)
             .catch {
                 Log.i("햄catch", this.toString())
             }
