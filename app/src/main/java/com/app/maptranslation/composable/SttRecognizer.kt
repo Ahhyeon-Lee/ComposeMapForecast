@@ -31,14 +31,15 @@ import kotlinx.coroutines.flow.Flow
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SttRecognizer(
-    viewModel: SttRecognizerViewModel
+    viewModel: SttRecognizerViewModel,
+    languageCode: String
 ) {
     val speechState by viewModel.recognizeState.collectAsStateWithLifecycleRemember(initial = RecognizeState.Ready)
 
     val context = LocalContext.current
     val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
         putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.packageName)
-        putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
     }
     val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
     speechRecognizer.setRecognitionListener(recognitionListener(context, viewModel))

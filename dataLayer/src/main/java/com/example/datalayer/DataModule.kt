@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.example.datalayer.local.database.AppDatabase
 import com.example.datalayer.local.datasource.RegionsRoomDataSource
 import com.example.datalayer.local.datasource.TranslateRoomDataSource
+import com.example.datalayer.remote.datasource.TranslateApiDataSource
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
+import com.example.datalayer.remote.service.TranslateApiService
 import com.example.datalayer.remote.service.WeatherApiService
 import com.google.gson.Gson
 import dagger.Module
@@ -19,6 +21,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,11 +34,10 @@ object DataSourceModule {
     ): RegionsRoomDataSource {
         return RegionsRoomDataSource(database.regionDao())
     }
-
     @Singleton
     @Provides
     fun provideWeatherApiDataSource(
-        apiService: WeatherApiService
+        @RetrofitNetworkModule.Weather apiService: WeatherApiService
     ): WeatherApiDataSource {
         return WeatherApiDataSource(apiService)
     }
@@ -45,6 +47,13 @@ object DataSourceModule {
     fun provideTranslateRoomDataSource(
         database: AppDatabase
     ): TranslateRoomDataSource = TranslateRoomDataSource(database.translateDao())
+
+
+    @Singleton
+    @Provides
+    fun provideTranslateApiDataSource(
+        @RetrofitNetworkModule.Translation service: TranslateApiService
+    ): TranslateApiDataSource = TranslateApiDataSource(service)
 }
 
 @Module
@@ -68,8 +77,21 @@ object DatabaseModule {
 @InstallIn(SingletonComponent::class)
 object RetrofitNetworkModule {
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Weather
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class Translation
+
     @Provides
+    @Weather
     fun provideWeatherApiBaseUrl() = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
+
+    @Provides
+    @Translation
+    fun provideTranslationApiBaseUrl() = "https://openapi.naver.com/"
 
     @Singleton
     @Provides
@@ -95,9 +117,10 @@ object RetrofitNetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(
+    @Weather
+    fun provideWeatherRetrofit(
         okHttpClient: OkHttpClient,
-        BASE_URL: String // baseurl 추가되면 retrofit 객체 반환 함수와 baseurl 제공 함수 추가 해서 각각에 @Qualifier 추가해서 지정해주기.
+        @Weather BASE_URL: String // baseurl 추가되면 retrofit 객체 반환 함수와 baseurl 제공 함수 추가 해서 각각에 @Qualifier 추가해서 지정해주기.
     ): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -108,8 +131,30 @@ object RetrofitNetworkModule {
 
     @Singleton
     @Provides
+    @Translation
+    fun provideTranslationRetrofit(
+        okHttpClient: OkHttpClient,
+        @Translation BASE_URL: String // baseurl 추가되면 retrofit 객체 반환 함수와 baseurl 제공 함수 추가 해서 각각에 @Qualifier 추가해서 지정해주기.
+    ): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    @Weather
     fun provideWeatherApiService(
-        retrofit: Retrofit
+        @Weather retrofit: Retrofit
     ) : WeatherApiService = retrofit.create(WeatherApiService::class.java)
+
+    @Singleton
+    @Provides
+    @Translation
+    fun provideTranslateApiService(
+        @Translation retrofit: Retrofit
+    ) : TranslateApiService = retrofit.create(TranslateApiService::class.java)
 }
 

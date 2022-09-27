@@ -1,6 +1,5 @@
 package com.app.maptranslation.composable
 
-import android.os.Bundle
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -24,10 +23,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.emoji2.text.EmojiCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -38,16 +33,11 @@ import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.app.maptranslation.viewmodel.TranslateViewModel
 import com.example.domain.model.Regions
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.*
 
 const val HOME_SCREEN = "HomeScreen"
@@ -58,8 +48,7 @@ const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
 
 @Composable
 fun MyApp(
-    mapViewModel: MapScreenViewModel = viewModel(),
-    translateViewModel: TranslateViewModel = viewModel()
+    mapViewModel: MapScreenViewModel = viewModel()
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -76,7 +65,7 @@ fun MyApp(
 
         }
         composable(TRANSLATE_SCREEN) {
-            TranslateScreen(translateViewModel)
+            TranslateScreen()
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
 
@@ -153,7 +142,7 @@ fun getLocation(context: Context) {
     ) {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
-                Log.i("아현", "lat : ${location.latitude} / long : ${location.longitude}")
+                //Log.i("아현", "lat : ${location.latitude} / long : ${location.longitude}")
             }
     }
 
