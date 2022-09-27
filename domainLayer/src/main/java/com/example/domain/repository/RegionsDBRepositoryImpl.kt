@@ -19,6 +19,15 @@ class RegionsDBRepositoryImpl(
         return roomDataSource.getRegionsData()
     }
 
+    override fun getSearchedRegionsList(textField: String): Flow<List<RegionRowEntity>> {
+        return roomDataSource.getSearchedRegionsList(textField)
+    }
+
+    override suspend fun getClosestRegion(longtitude: Double, latitude: Double): RegionRowEntity {
+        return roomDataSource.getClosestRegion(longtitude, latitude)
+    }
+
+
     override suspend fun insertRegions(regionRowEntity: RegionRowEntity) {
         roomDataSource.insertRegionData(regionRowEntity)
     }

@@ -8,6 +8,7 @@ import com.example.domain.repository.WeatherRepository
 import com.example.domain.repository.WeatherRepositoryImpl
 import com.example.domain.usecase.GetDateTimeInfoUseCase
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
+import com.example.domain.usecase.map.GetSearchedRegionsUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import dagger.Module
 import dagger.Provides
@@ -36,6 +37,13 @@ object UsecaseModule {
 
     @Provides
     fun provideGetDateTimeInfoUseCase() : GetDateTimeInfoUseCase = GetDateTimeInfoUseCase()
+
+    @Provides
+    fun provideGetSearchedRegionsUseCase(
+        regionsDBRepository: RegionsDBRepository
+    ) : GetSearchedRegionsUseCase {
+        return GetSearchedRegionsUseCase(regionsDBRepository)
+    }
 }
 
 @Module

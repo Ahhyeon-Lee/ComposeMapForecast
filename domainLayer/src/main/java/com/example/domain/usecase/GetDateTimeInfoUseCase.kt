@@ -12,7 +12,7 @@ class GetDateTimeInfoUseCase {
 
     fun getTime(format:String) : String {
         val timeFormat = SimpleDateFormat(format, Locale.getDefault())
-        val date = Date()
+        val date = Date().time.minus(1)
 //        return timeFormat.format(date)
         return "1000"
     }

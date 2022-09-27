@@ -15,6 +15,14 @@ class RegionsRoomDataSource(
         return regionDao.getAll()
     }
 
+    fun getSearchedRegionsList(textField:String) : Flow<List<RegionRowEntity>> {
+        return regionDao.getSearchedRegionsList(textField)
+    }
+
+    suspend fun getClosestRegion(longtitude:Double, latitude:Double) : RegionRowEntity {
+        return regionDao.getClosestRegion(longtitude, latitude)
+    }
+
     suspend fun insertRegionData(regionRowEntity: RegionRowEntity) {
         withContext(Dispatchers.IO) {
             regionDao.insert(regionRowEntity)

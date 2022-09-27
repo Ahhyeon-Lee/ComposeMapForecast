@@ -4,12 +4,15 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,19 +20,21 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
+import com.app.maptranslation.onUiState
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.example.domain.model.Regions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -47,7 +52,7 @@ const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
 
 @Composable
 fun MyApp(
-    mapViewModel: MapScreenViewModel = viewModel()
+    viewModel: MapScreenViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -55,10 +60,10 @@ fun MyApp(
         startDestination = HOME_SCREEN
     ) {
         composable(HOME_SCREEN) {
-            HomeScreen(navController, mapViewModel)
+            HomeScreen(navController, viewModel)
         }
         composable(MAP_SCREEN) {
-            MapScreen(navController, mapViewModel)
+            MapScreen(navController, viewModel)
         }
         composable(MAP_HISTORY_SCREEN) {
 
@@ -97,8 +102,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
             ) {
                 Button(onClick = {
                     checkPermissions(locationPermissionState) {
-                        getLocation(context)
-                        viewModel.checkRegionsData(context.applicationContext)
+                        viewModel.checkDbAndInsertData(context.applicationContext)
                         navController.navigate(MAP_SCREEN)
                     }
                 }) {
@@ -129,7 +133,73 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
     }
 }
 
-fun getLocation(context: Context) {
+@Composable
+fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
+    val textFieldUiState by viewModel.textFieldUiState.collectAsState(Pair(true, listOf()))
+    if (!(textFieldUiState.first)) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            getLocation(LocalContext.current, viewModel)
+            GoogleMapBox(viewModel)
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            TextFieldBox(navController, textFieldUiState.second, viewModel)
+        }
+    }
+}
+
+@Composable
+fun GoogleMapBox(viewModel: MapScreenViewModel) {
+    val context = LocalContext.current
+    val weatherData = viewModel.weatherState
+    val location = LatLng(weatherData.latitude, weatherData.longtitude)
+    val cameraPositionState = CameraPositionState(
+        position = CameraPosition.fromLatLngZoom(location, 10f)
+    )
+    val uiSettings by remember { 
+        mutableStateOf(
+            MapUiSettings(zoomControlsEnabled = true)
+        )
+    }
+
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        uiSettings = uiSettings,
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = location),
+            title = weatherData.dong,
+            icon = viewModel.drawBitmapIcon(weatherData.icon),
+            snippet = weatherData.weatherMark
+        )
+    }
+    Box(
+        modifier = Modifier.fillMaxSize().padding(start = 10.dp, bottom = 40.dp),
+        contentAlignment = Alignment.BottomStart,
+    ) {
+        IconButton(
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(colorResource(id = R.color.sky)),
+            onClick = {
+                getLocation(context, viewModel)
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_gps_fixed_24),
+                tint = colorResource(id = R.color.white),
+                contentDescription = "CurrentLocation"
+            )
+        }
+    }
+}
+
+fun getLocation(context: Context, viewModel: MapScreenViewModel) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     if (ActivityCompat.checkSelfPermission(
             context,
@@ -141,73 +211,18 @@ fun getLocation(context: Context) {
     ) {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
-                Log.i("아현", "lat : ${location.latitude} / long : ${location.longitude}")
+                Log.i("아현", "long : ${location.longitude} / lat : ${location.latitude}")
+                viewModel.locationTest(location.longitude, location.latitude)
             }
     }
-
 }
 
 @Composable
-fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
-//    getLocation()
-    Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMapBox(viewModel)
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        TextFieldBox(navController, viewModel)
-    }
-}
-
-@Composable
-fun GoogleMapBox(viewModel: MapScreenViewModel) {
-    val weatherData = viewModel.weatherState
-    val location = LatLng(
-        weatherData.latitude.toDouble(),
-        weatherData.longtitude.toDouble()
-    )
-    val cameraPositionState = CameraPositionState(
-        position = CameraPosition.fromLatLngZoom(location, 10f)
-    )
-    var uiSettings by remember { mutableStateOf(
-        MapUiSettings(
-            myLocationButtonEnabled = true
-        ))
-    }
-    var properties by remember {
-        mutableStateOf(MapProperties(isMyLocationEnabled = true))
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMap(
-            modifier = Modifier.matchParentSize(),
-            properties = properties,
-            uiSettings = uiSettings,
-            cameraPositionState = cameraPositionState
-        ) {
-            Marker(
-                state = MarkerState(position = location),
-                title = weatherData.getMarkTitle(),
-                icon = viewModel.drawBitmap(weatherData.icon),
-                snippet = ""
-            )
-        }
-
-        Switch(
-            checked = uiSettings.zoomControlsEnabled,
-            onCheckedChange = {
-                uiSettings = uiSettings.copy(zoomControlsEnabled = it)
-            }
-        )
-    }
-}
-
-@Composable
-fun TextFieldBox(navController: NavController, viewModel: MapScreenViewModel) {
+fun TextFieldBox(
+    navController: NavController,
+    searchedRegionsList: List<Regions>,
+    viewModel: MapScreenViewModel
+) {
     val (text, setText) = remember { mutableStateOf("") }
 
     Column(
@@ -261,8 +276,9 @@ fun TextFieldBox(navController: NavController, viewModel: MapScreenViewModel) {
             }
         }
         if (text.isNotEmpty()) {
+            viewModel.getSearchingRegionsList(text)
             DropDownLazyColumn(
-                viewModel.getRegionsList(text).takeIf {
+                searchedRegionsList.takeIf {
                     it.isNotEmpty()
                 } ?: listOf(Regions("검색 결과가 없습니다.")),
                 viewModel
@@ -283,47 +299,19 @@ fun DropDownLazyColumn(regionsList:List<Regions>, viewModel: MapScreenViewModel)
         horizontalAlignment = Alignment.Start
     ) {
         items(regionsList) { region ->
-            DropDownItem(region = region, regionsList = regionsList, viewModel)
+            Surface(
+                modifier = Modifier.clickable {
+                    viewModel.getWeatherInfo(region)
+                }
+            ) {
+                Text(
+                    text = "${region.city} ${region.gu} ${region.dong}",
+                    modifier = Modifier.padding(10.dp)
+                )
+                if (regionsList.indexOf(region) != regionsList.lastIndex) {
+                    Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+            }
         }
     }
-}
-
-@Composable
-fun DropDownItem(region:Regions, regionsList: List<Regions>, viewModel: MapScreenViewModel) {
-    Surface(
-        modifier = Modifier.clickable {
-            viewModel.getWeatherInfo(region)
-        }
-    ) {
-        Text(
-            text = "${region.city} ${region.gu} ${region.dong}",
-            modifier = Modifier.padding(10.dp)
-        )
-        if (regionsList.indexOf(region) != regionsList.lastIndex) {
-            Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
-        }
-    }
-}
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    val navController = rememberNavController()
-//    HomeScreen(navController)
-}
-
-@Preview
-@Composable
-fun MapScreenPreview() {
-    val navController = rememberNavController()
-    val mapViewModel:MapScreenViewModel = viewModel()
-    MapScreen(navController, mapViewModel)
-}
-
-@Preview
-@Composable
-fun TextFieldAreaPreview() {
-    val navController = rememberNavController()
-    val mapViewModel:MapScreenViewModel = viewModel()
-    TextFieldBox(navController, mapViewModel)
 }

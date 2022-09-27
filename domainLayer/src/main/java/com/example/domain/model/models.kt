@@ -8,8 +8,8 @@ data class Regions(
     val dong:String = "",
     val nx:String = "",
     val ny:String = "",
-    val longtitude:String = "0.0",
-    val latitude:String = "0.0"
+    val longtitude:Double = 0.0,
+    val latitude:Double = 0.0
 )
 
 data class WeatherForecast(
@@ -18,8 +18,8 @@ data class WeatherForecast(
     val dong:String = "",
     val nx: String="",
     val ny: String="",
-    val longtitude: String = "0.0",
-    val latitude: String = "0.0",
+    val longtitude: Double = 0.0,
+    val latitude: Double = 0.0,
     val weather: String="" // 0:맑음, 1:비, 2:눈, 3:구름많음, 4:흐림
 ) {
     val icon = with(weather) {

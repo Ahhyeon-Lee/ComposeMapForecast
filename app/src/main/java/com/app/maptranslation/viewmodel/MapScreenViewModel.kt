@@ -8,27 +8,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datalayer.local.model.RegionRowEntity
 import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
+import com.example.domain.usecase.map.GetSearchedRegionsUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MapScreenViewModel @Inject constructor(
     private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
+    private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
     private val getWeatherInfoUsecase : GetWeatherInfoUsecase
 ) : ViewModel() {
 
-    private var regionsList: List<Regions> = listOf()
+    private val _dbLoading = MutableStateFlow(true)
+    private var _regionsList = MutableStateFlow<List<Regions>>(listOf())
+    val textFieldUiState = combine(_dbLoading, _regionsList) { dbLoading, regionsList ->
+        Pair(dbLoading, regionsList)
+    }
 
     var weatherState by mutableStateOf(WeatherForecast())
         private set
@@ -48,7 +56,7 @@ class MapScreenViewModel @Inject constructor(
             }
     }
 
-    fun drawBitmap(emojiText:String) : BitmapDescriptor? {
+    fun drawBitmapIcon(emojiText:String) : BitmapDescriptor? {
         return emojiText.takeIf { it.isNotEmpty() }?.let {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             paint.apply {
@@ -78,13 +86,24 @@ class MapScreenViewModel @Inject constructor(
         }
     }
 
-    fun getRegionsList(textField:String) : List<Regions> {
-        return regionsList.filter {
-            "${it.city} ${it.gu} ${it.dong}".contains(textField)
-        }
+    fun getSearchingRegionsList(textField:String) = viewModelScope.launch {
+        getSearchedRegionsUseCase.invoke("%$textField%")
+            .collectLatest {
+                _regionsList.value = it
+            }
     }
 
-    fun checkRegionsData(applicationContext: Context) = viewModelScope.launch {
-        regionsList = checkRegionsDbDataUsecase.invoke(applicationContext)
+    fun locationTest(longtitude:Double, latitude:Double) = viewModelScope.launch {
+        val region = getSearchedRegionsUseCase.test(longtitude, latitude)
+        getWeatherInfo(region)
+        Log.i("아현 location", "$region")
+    }
+
+    fun checkDbAndInsertData(applicationContext: Context) {
+        _dbLoading.value = true
+        CoroutineScope(Dispatchers.IO).launch {
+            checkRegionsDbDataUsecase.invoke(applicationContext)
+            _dbLoading.value = false
+        }
     }
 }
