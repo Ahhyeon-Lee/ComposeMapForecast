@@ -4,15 +4,12 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import android.widget.ImageButton
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -34,7 +31,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
-import com.app.maptranslation.onUiState
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.example.domain.model.Regions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -49,10 +45,11 @@ const val MAP_SCREEN = "MapScreen"
 const val MAP_HISTORY_SCREEN = "MapHistoryScreen"
 const val TRANSLATE_SCREEN = "TranslateScreen"
 const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
+const val CLOVA_TEST = "ClovaTest"
 
 @Composable
 fun MyApp(
-    viewModel: MapScreenViewModel = hiltViewModel()
+    mapViewModel: MapScreenViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -60,10 +57,10 @@ fun MyApp(
         startDestination = HOME_SCREEN
     ) {
         composable(HOME_SCREEN) {
-            HomeScreen(navController, viewModel)
+            HomeScreen(navController, mapViewModel)
         }
         composable(MAP_SCREEN) {
-            MapScreen(navController, viewModel)
+            MapScreen(navController, mapViewModel)
         }
         composable(MAP_HISTORY_SCREEN) {
 
@@ -73,6 +70,9 @@ fun MyApp(
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
 
+        }
+        composable(CLOVA_TEST) {
+            ClovaTest()
         }
     }
 }
@@ -129,6 +129,11 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
                     Text(text = "번역 히스토리")
                 }
             }
+            Button(onClick = {
+                navController.navigate(CLOVA_TEST)
+            }) {
+                Text(text = "클로바 테스트")
+            }
         }
     }
 }
@@ -160,7 +165,7 @@ fun GoogleMapBox(viewModel: MapScreenViewModel) {
     val cameraPositionState = CameraPositionState(
         position = CameraPosition.fromLatLngZoom(location, 10f)
     )
-    val uiSettings by remember { 
+    val uiSettings by remember {
         mutableStateOf(
             MapUiSettings(zoomControlsEnabled = true)
         )

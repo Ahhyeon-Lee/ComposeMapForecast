@@ -65,6 +65,7 @@ dependencies {
     implementation(Libraries.Compose.COMPOSE_PREVIEW)
     implementation(Libraries.Compose.COMPOSE_VIEW_MODEL)
     implementation(Libraries.Compose.COMPOSE_NAVIGATION)
+    implementation(Libraries.Compose.COMPOSE_LIVEDATA)
     implementation(Libraries.Compose.COMPOSE_MAPS)
     androidTestImplementation(Libraries.Compose.COMPOSE_JUNIT)
     debugImplementation(Libraries.Compose.COMPOSE_UI_TOOLING)
@@ -93,6 +94,11 @@ dependencies {
     implementation(Libraries.Retrofit.OKHTTP)
     implementation(Libraries.Retrofit.OKHTTP_LOGGING)
 
+    implementation(Libraries.Lottie.LOTTIE_COMPOSE)
+
+    implementation("com.naver.speech.clientapi:naverspeech-ncp-sdk-android:1.1.6")
+
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
+    implementation(project(":util"))
 }

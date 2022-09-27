@@ -35,6 +35,7 @@ dependencies {
     testImplementation(Libraries.Test.JUNIT)
     androidTestImplementation(Libraries.AndroidX.JUNIT)
     androidTestImplementation(Libraries.AndroidX.ESPRESSO_CORE)
+    implementation("com.google.accompanist:accompanist-permissions:0.25.1")
 
     // ExcelReader
     implementation(Libraries.ExcelReader.JEXCEL)
