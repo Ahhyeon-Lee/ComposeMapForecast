@@ -68,22 +68,13 @@ fun SttRecognizer(
             }
         }
     }
-
-    when(speechState){
-        RecognizeState.End -> Toast.makeText(context, "음성인식 종료", Toast.LENGTH_SHORT).show()
-        RecognizeState.Ready -> {}
-        is RecognizeState.Result -> {
-            viewModel.setSourceLanguage((speechState as RecognizeState.Result).text)
-        }
-        RecognizeState.Start -> Toast.makeText(context, "음성인식 시작", Toast.LENGTH_SHORT).show()
-    }
 }
 
 private fun recognitionListener(context: Context, viewModel: SttRecognizerViewModel) = object : RecognitionListener {
 
     override fun onReadyForSpeech(params: Bundle?) {
         viewModel.setRecognizeState(RecognizeState.Start)
-
+        Toast.makeText(context, "음성인식 시작", Toast.LENGTH_SHORT).show()
     }
 
     override fun onError(error: Int) {
@@ -95,7 +86,7 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
 
     override fun onResults(results: Bundle) {
         Toast.makeText(context, "음성인식 종료", Toast.LENGTH_SHORT).show()
-        viewModel.setRecognizeState(RecognizeState.Result(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0]))
+        viewModel.setSourceLanguage(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0])
     }
 
     override fun onPartialResults(p0: Bundle?) {}
@@ -104,7 +95,6 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
     override fun onRmsChanged(p0: Float) {}
     override fun onBufferReceived(p0: ByteArray?) {}
     override fun onEndOfSpeech() {
-        Log.i("햄", "end")
         viewModel.setRecognizeState(RecognizeState.End)
     }
 }
