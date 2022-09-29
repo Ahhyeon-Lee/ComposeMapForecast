@@ -18,26 +18,13 @@ class GetSearchedRegionsUseCase(
                     city = it.city,
                     gu = it.gu ?: "",
                     dong = it.dong ?: "",
+                    address = it.address ?: "",
                     nx = it.nx,
                     ny = it.ny,
                     latitude = it.latitude,
                     longtitude = it.longtitude
                 )
             }
-        }
-    }
-
-    suspend fun test(longtitude:Double, latitude:Double) : Regions {
-        return with(regionsDBRepository.getClosestRegion(longtitude, latitude)) {
-            Regions(
-                city = city,
-                gu = gu ?: "",
-                dong = dong ?: "",
-                nx = nx,
-                ny = ny,
-                latitude = latitude,
-                longtitude = longtitude
-            )
         }
     }
 }

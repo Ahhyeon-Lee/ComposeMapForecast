@@ -14,6 +14,7 @@ import com.example.domain.repository.translate.TranslateRepository
 import com.example.domain.repository.translate.TranslateRepositoryImpl
 import com.example.domain.usecase.GetDateTimeInfoUseCase
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
+import com.example.domain.usecase.map.GetClosesRegionInDbUseCase
 import com.example.domain.usecase.map.GetSearchedRegionsUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import com.example.domain.usecase.translate.GetLanguageCodeUseCase
@@ -52,6 +53,13 @@ object UsecaseModule {
         regionsDBRepository: RegionsDBRepository
     ) : GetSearchedRegionsUseCase {
         return GetSearchedRegionsUseCase(regionsDBRepository)
+    }
+
+    @Provides
+    fun provideGetClosesRegionInDbUseCase(
+        regionsDBRepository: RegionsDBRepository
+    ) : GetClosesRegionInDbUseCase {
+        return GetClosesRegionInDbUseCase(regionsDBRepository)
     }
 
     @Provides

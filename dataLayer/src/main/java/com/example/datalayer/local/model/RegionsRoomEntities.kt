@@ -9,6 +9,7 @@ data class RegionRowEntity(
     @ColumnInfo(name = "city") var city:String,
     @ColumnInfo(name = "gu") var gu:String?,
     @ColumnInfo(name = "dong") var dong:String?,
+    @ColumnInfo(name = "address") var address:String?,
     @ColumnInfo(name = "nx") var nx:String,
     @ColumnInfo(name = "ny") var ny:String,
     @ColumnInfo(name = "longtitude") var longtitude:Double,

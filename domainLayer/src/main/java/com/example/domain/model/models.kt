@@ -6,6 +6,7 @@ data class Regions(
     val city:String = "",
     val gu:String = "",
     val dong:String = "",
+    val address:String = "",
     val nx:String = "",
     val ny:String = "",
     val longtitude:Double = 0.0,

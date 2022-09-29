@@ -27,6 +27,7 @@ class CheckRegionsDbDataUseCase(
                             cell[0].contents,
                             cell[1].contents,
                             cell[2].contents,
+                            "${cell[0].contents} ${cell[1].contents} ${cell[2].contents}",
                             cell[3].contents,
                             cell[4].contents,
                             cell[5].contents.toDoubleOrNull() ?: 0.0,

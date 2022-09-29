@@ -13,9 +13,7 @@ interface RegionsRoomDao {
     @Query("SELECT * FROM regions")
     suspend fun getAll() : List<RegionRowEntity>
 
-    @Query("SELECT * FROM regions WHERE city LIKE :textField " +
-            "OR gu LIKE :textField " +
-            "OR dong LIKE :textField ")
+    @Query("SELECT * FROM regions WHERE address LIKE :textField")
     fun getSearchedRegionsList(textField:String) : Flow<List<RegionRowEntity>>
 
     @Query("SELECT * FROM regions " +

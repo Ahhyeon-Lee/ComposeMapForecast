@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,24 +19,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapScreenViewModel
+import com.app.maptranslation.viewmodel.SttRecognizerViewModel
 import com.example.domain.model.Regions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -79,7 +86,10 @@ fun MyApp(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    mapViewModel: MapScreenViewModel
+) {
     val context = LocalContext.current
 
     val locationPermissionState = rememberMultiplePermissionsState(
@@ -102,7 +112,7 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
             ) {
                 Button(onClick = {
                     checkPermissions(locationPermissionState) {
-                        viewModel.checkDbAndInsertData(context.applicationContext)
+                        mapViewModel.checkDbAndInsertData(context.applicationContext)
                         navController.navigate(MAP_SCREEN)
                     }
                 }) {
@@ -140,49 +150,71 @@ fun HomeScreen(navController: NavController, viewModel: MapScreenViewModel) {
 
 @Composable
 fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
-    val textFieldUiState by viewModel.textFieldUiState.collectAsState(Pair(true, listOf()))
-    if (!(textFieldUiState.first)) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            getLocation(LocalContext.current, viewModel)
-            GoogleMapBox(viewModel)
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            TextFieldBox(navController, textFieldUiState.second, viewModel)
-        }
+    if (!viewModel.dbLoading.value) {
+        markCurrentLocWeatherInfo(LocalContext.current, viewModel)
+        GoogleMapBox(navController, viewModel)
+    } else {
+        LoadingScreen()
     }
 }
 
 @Composable
-fun GoogleMapBox(viewModel: MapScreenViewModel) {
+fun LoadingScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator()
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "지역 데이터를 로딩중입니다.\n잠시만 기다려주세요.",
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun GoogleMapBox(
+    navController : NavController,
+    viewModel: MapScreenViewModel
+) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     val weatherData = viewModel.weatherState
     val location = LatLng(weatherData.latitude, weatherData.longtitude)
-    val cameraPositionState = CameraPositionState(
-        position = CameraPosition.fromLatLngZoom(location, 10f)
-    )
-    val uiSettings by remember {
+    val cameraPositionState by remember {
         mutableStateOf(
-            MapUiSettings(zoomControlsEnabled = true)
+            CameraPositionState(CameraPosition.fromLatLngZoom(location, 10f))
         )
     }
 
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        uiSettings = uiSettings,
-        cameraPositionState = cameraPositionState
+        uiSettings = MapUiSettings(zoomControlsEnabled = true),
+        cameraPositionState = cameraPositionState,
+        onMapClick = {
+            focusManager.clearFocus()
+        }
     ) {
+        cameraPositionState.move(CameraUpdateFactory.newLatLng(location))
         Marker(
             state = MarkerState(position = location),
-            title = weatherData.dong,
+            title = weatherData.dong.takeIf { it.isNotEmpty() } ?: weatherData.gu.takeIf { it.isNotEmpty() } ?: weatherData.city,
             icon = viewModel.drawBitmapIcon(weatherData.icon),
             snippet = weatherData.weatherMark
         )
     }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        TextFieldBox(navController, cameraPositionState, viewModel)
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().padding(start = 10.dp, bottom = 40.dp),
         contentAlignment = Alignment.BottomStart,
@@ -192,7 +224,7 @@ fun GoogleMapBox(viewModel: MapScreenViewModel) {
                 .clip(CircleShape)
                 .background(colorResource(id = R.color.sky)),
             onClick = {
-                getLocation(context, viewModel)
+                markCurrentLocWeatherInfo(context, viewModel, cameraPositionState)
             }
         ) {
             Icon(
@@ -204,32 +236,14 @@ fun GoogleMapBox(viewModel: MapScreenViewModel) {
     }
 }
 
-fun getLocation(context: Context, viewModel: MapScreenViewModel) {
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                Log.i("아현", "long : ${location.longitude} / lat : ${location.latitude}")
-                viewModel.locationTest(location.longitude, location.latitude)
-            }
-    }
-}
-
 @Composable
 fun TextFieldBox(
     navController: NavController,
-    searchedRegionsList: List<Regions>,
-    viewModel: MapScreenViewModel
+    cameraPositionState: CameraPositionState,
+    viewModel: MapScreenViewModel,
+    sttViewModel : SttRecognizerViewModel = viewModel(),
 ) {
-    val (text, setText) = remember { mutableStateOf("") }
-
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -245,12 +259,15 @@ fun TextFieldBox(
                         contentDescription = "BackBtn")
                 }
                 TextField(
-                    value = text,
-                    onValueChange = setText,
+                    value = sttViewModel.sttText.value,
+                    onValueChange = { sttViewModel.setSttText(it) },
                     placeholder = { Text(text = "시, 구, 동 검색") },
                     modifier = Modifier
                         .weight(1f)
-                        .background(Color.White),
+                        .background(Color.White)
+                        .padding(horizontal = 0.dp)
+                        .focusRequester(focusRequester)
+                    ,
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.DarkGray,
                         backgroundColor = Color.White,
@@ -258,20 +275,24 @@ fun TextFieldBox(
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+
+                    )
+                )
+                SttRecognizer(
+                    viewModel = sttViewModel,
+                    languageCode = "ko"
                 )
                 IconButton(
                     modifier = Modifier.wrapContentSize(),
-                    onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_mic_24),
-                        tint = colorResource(id = R.color.sky),
-                        contentDescription = "VoiceBtn"
-                    )
-                }
-                IconButton(
-                    modifier = Modifier.wrapContentSize(),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        viewModel.regionsList.takeIf { it.isNotEmpty() }?.let {
+                            sttViewModel.setSttText(viewModel.regionsList[0].address)
+                            markWeatherInfo(viewModel, viewModel.regionsList[0], cameraPositionState)
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         tint = colorResource(id = R.color.sky),
@@ -280,43 +301,59 @@ fun TextFieldBox(
                 }
             }
         }
-        if (text.isNotEmpty()) {
-            viewModel.getSearchingRegionsList(text)
-            DropDownLazyColumn(
-                searchedRegionsList.takeIf {
-                    it.isNotEmpty()
-                } ?: listOf(Regions("검색 결과가 없습니다.")),
-                viewModel
-            )
-        }
-    }
-}
 
-@Composable
-fun DropDownLazyColumn(regionsList:List<Regions>, viewModel: MapScreenViewModel) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .requiredHeightIn(max = 150.dp)
-            .padding(horizontal = 40.dp)
-            .background(Color.White),
-        horizontalAlignment = Alignment.Start
-    ) {
-        items(regionsList) { region ->
-            Surface(
-                modifier = Modifier.clickable {
-                    viewModel.getWeatherInfo(region)
-                }
+        if (sttViewModel.sttText.value.isNotEmpty()) {
+            viewModel.getSearchingRegionsList(sttViewModel.sttText.value)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .requiredHeightIn(max = 150.dp)
+                    .padding(horizontal = 40.dp)
+                    .background(Color.White),
+                horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = "${region.city} ${region.gu} ${region.dong}",
-                    modifier = Modifier.padding(10.dp)
-                )
-                if (regionsList.indexOf(region) != regionsList.lastIndex) {
-                    Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
+                items(viewModel.regionsList) { region ->
+                    Surface(
+                        modifier = Modifier.clickable {
+                            markWeatherInfo(viewModel, region, cameraPositionState)
+                            sttViewModel.setSttText(region.address)
+                        }
+                    ) {
+                        Text(
+                            text = viewModel.regionsList.takeIf { it.isNotEmpty() }?.let { region.address } ?: "검색 결과가 없습니다.",
+                            modifier = Modifier.padding(10.dp)
+                        )
+                        if (viewModel.regionsList.indexOf(region) != viewModel.regionsList.lastIndex) {
+                            Divider(color = colorResource(R.color.light_gray), thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 10.dp))
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+fun markCurrentLocWeatherInfo(context: Context, viewModel: MapScreenViewModel, cameraPositionState: CameraPositionState? = null) {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                Log.i("아현", "long : ${location.longitude} / lat : ${location.latitude}")
+                viewModel.getCurrentLocWeatherInfo(location.longitude, location.latitude)
+                cameraPositionState?.move(CameraUpdateFactory.newLatLng(LatLng(location.latitude, location.longitude)))
+            }
+    }
+}
+
+fun markWeatherInfo(viewModel: MapScreenViewModel, regions: Regions, cameraPositionState: CameraPositionState) {
+    viewModel.getWeatherInfo(regions)
+    cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(regions.latitude, regions.longtitude)))
 }
