@@ -18,9 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.SttRecognizerViewModel
 import com.app.maptranslation.viewmodel.TranslateViewModel
 
@@ -57,7 +59,7 @@ fun TranslateScreen(
                 modifier = Modifier
                     .height(200.dp)
                     .focusRequester(focusRequester = focusRequester),
-                label = { Text(text = "텍스트 입력")}
+                label = { Text(text = stringResource(id = R.string.text_input))}
             )
             SttRecognizer(sttViewModel, viewModel.selectSource.value.code)
         }
@@ -70,7 +72,7 @@ fun TranslateScreen(
                 viewModel.translateText(sttViewModel.sttText.value)
                 focusManager.clearFocus()
             }) {
-            Text(text = "번역")
+            Text(text = stringResource(id = R.string.translate))
         }
 
         DropdownMenuLanguageTarget(viewModel)

@@ -19,11 +19,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.TranslateViewModel
 import com.example.domain.model.TranslateHistoryData
 
@@ -41,7 +43,7 @@ fun HistoryScreen(viewModel: TranslateViewModel = hiltViewModel()) {
 
             Text(
                 modifier = Modifier.padding(20.dp, 50.dp),
-                text = "번역 히스토리",
+                text = stringResource(id = R.string.map_history),
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp
             )

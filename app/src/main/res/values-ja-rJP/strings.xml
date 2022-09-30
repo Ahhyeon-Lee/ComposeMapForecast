@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">map_translation</string>
+    <string name="map">地図</string>
+    <string name="translate">翻訳</string>
+    <string name="map_history">地図履歴</string>
+    <string name="translate_history">翻訳履歴</string>
+    <string name="clova_stt">CLOVA STT</string>
+    <string name="text_input">テキスト入力</string>
+    <string name=" address_input">住所検索</string>
+    <string name=" address_input">住所検索</string>
+    <string name="address_input">住所検索</string>
+</resources>

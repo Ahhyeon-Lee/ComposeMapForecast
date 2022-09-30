@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -119,12 +120,12 @@ fun HomeScreen(
                         navController.navigate(MAP_SCREEN)
                     }
                 }) {
-                    Text(text = "지도")
+                    Text(text = stringResource(id = R.string.map))
                 }
                 Button(onClick = {
                     navController.navigate(MAP_HISTORY_SCREEN)
                 }) {
-                    Text(text = "지도 히스토리")
+                    Text(text = stringResource(id = R.string.map_history))
                 }
             }
 
@@ -134,18 +135,18 @@ fun HomeScreen(
                 Button(onClick = {
                     navController.navigate(TRANSLATE_SCREEN)
                 }) {
-                    Text(text = "번역")
+                    Text(text = stringResource(id = R.string.translate))
                 }
                 Button(onClick = {
                     navController.navigate(TRANSLATE_HISTORY_SCREEN)
                 }) {
-                    Text(text = "번역 히스토리")
+                    Text(text = stringResource(id = R.string.translate_history))
                 }
             }
             Button(onClick = {
                 navController.navigate(CLOVA_TEST)
             }) {
-                Text(text = "클로바 테스트")
+                Text(text = stringResource(id = R.string.clova_stt))
             }
         }
     }
@@ -219,7 +220,9 @@ fun GoogleMapBox(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(start = 10.dp, bottom = 40.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 10.dp, bottom = 40.dp),
         contentAlignment = Alignment.BottomStart,
     ) {
         IconButton(
@@ -264,7 +267,7 @@ fun TextFieldBox(
                 TextField(
                     value = sttViewModel.sttText.value,
                     onValueChange = { sttViewModel.setSttText(it) },
-                    placeholder = { Text(text = "시, 구, 동 검색") },
+                    placeholder = { Text(text = stringResource(id = R.string.address_input)) },
                     modifier = Modifier
                         .weight(1f)
                         .background(Color.White)
