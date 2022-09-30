@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">My Application</string>
+
+    <string name="sunny">맑음</string>
+    <string name="rain">비</string>
+    <string name="snow">눈</string>
+    <string name="cloudy">구름 많음</string>
+    <string name="bad">흐림</string>
 </resources>

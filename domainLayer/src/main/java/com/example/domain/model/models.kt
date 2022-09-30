@@ -1,5 +1,7 @@
 package com.example.domain.model
 
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
 import com.example.domain.R
 
 data class Regions(
@@ -34,18 +36,13 @@ data class WeatherForecast(
         }
     }
 
-    val weatherMark = with(weather) {
+    @StringRes val weatherMark : Int = with(weather) {
         when(this) {
-            "0" -> "맑음"
-            "1" -> "비"
-            "2" -> "눈"
-            "3" -> "구름 많음"
-            else -> "흐림"
+            "0" -> R.string.sunny
+            "1" -> R.string.rain
+            "2" -> R.string.snow
+            "3" -> R.string.cloudy
+            else -> R.string.bad
         }
-    }
-
-    fun getMarkTitle() : String {
-        val location = dong.takeIf { it.isNotEmpty() } ?: gu.takeIf { it.isNotEmpty() } ?: city
-        return "$location : $weatherMark"
     }
 }
