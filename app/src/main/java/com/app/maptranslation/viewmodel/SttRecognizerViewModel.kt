@@ -12,14 +12,14 @@ class SttRecognizerViewModel: ViewModel() {
     private val _recognizeState = MutableStateFlow<RecognizeState>(RecognizeState.Ready)
     val recognizeState = _recognizeState.asStateFlow()
 
-    private val _sourceLanguage = mutableStateOf("")
-    val sourceLanguage: State<String> = _sourceLanguage
+    private val _sttText = mutableStateOf("")
+    val sttText: State<String> = _sttText
 
     fun setRecognizeState(state: RecognizeState) {
         _recognizeState.value = state
     }
 
-    fun setSourceLanguage(text: String) {
-        _sourceLanguage.value = text
+    fun setSttText(text: String) {
+        _sttText.value = text
     }
 }

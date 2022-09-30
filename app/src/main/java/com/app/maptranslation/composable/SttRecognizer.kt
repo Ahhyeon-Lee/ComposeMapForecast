@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Icon
@@ -86,7 +85,7 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
 
     override fun onResults(results: Bundle) {
         Toast.makeText(context, "음성인식 종료", Toast.LENGTH_SHORT).show()
-        viewModel.setSourceLanguage(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0])
+        viewModel.setSttText(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0])
     }
 
     override fun onPartialResults(p0: Bundle?) {}

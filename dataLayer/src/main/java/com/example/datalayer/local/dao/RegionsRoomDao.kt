@@ -9,8 +9,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RegionsRoomDao {
+
     @Query("SELECT * FROM regions")
     suspend fun getAll() : List<RegionRowEntity>
+
+    @Query("SELECT * FROM regions WHERE address LIKE :textField")
+    fun getSearchedRegionsList(textField:String) : Flow<List<RegionRowEntity>>
+
+    @Query("SELECT * FROM regions " +
+            "ORDER BY ((longtitude - :longtitude)*(longtitude - :longtitude) + (latitude - :latitude)*(latitude - :latitude)) " +
+            "LIMIT 1")
+    suspend fun getClosestRegion(longtitude:Double, latitude:Double) : RegionRowEntity
 
     @Insert
     suspend fun insert(vararg region : RegionRowEntity)

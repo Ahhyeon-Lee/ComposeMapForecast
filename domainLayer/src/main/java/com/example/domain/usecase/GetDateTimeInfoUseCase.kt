@@ -10,10 +10,9 @@ class GetDateTimeInfoUseCase {
         return dateFormat.format(date)
     }
 
-    fun getTime(format:String) : String {
+    fun getTimeOneHourBefore(format:String) : String {
         val timeFormat = SimpleDateFormat(format, Locale.getDefault())
-        val date = Date()
-//        return timeFormat.format(date)
-        return "1000"
+        val timeOneHourBefore = Date(System.currentTimeMillis() - 3600*1000)
+        return timeFormat.format(timeOneHourBefore)
     }
 }

@@ -12,25 +12,33 @@ import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
+import com.example.domain.usecase.map.GetClosesRegionInDbUseCase
+import com.example.domain.usecase.map.GetSearchedRegionsUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MapScreenViewModel @Inject constructor(
     private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
+    private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
+    private val getClosesRegionInDbUseCase: GetClosesRegionInDbUseCase,
     private val getWeatherInfoUsecase : GetWeatherInfoUsecase
 ) : ViewModel() {
 
-    private var regionsList: List<Regions> = listOf()
+    var dbLoading = mutableStateOf(true)
+        private set
 
     var weatherState by mutableStateOf(WeatherForecast())
+        private set
+
+    var regionsList : List<Regions> by mutableStateOf(listOf())
         private set
 
     fun getWeatherInfo(regionData:Regions) = viewModelScope.launch {
@@ -48,43 +56,49 @@ class MapScreenViewModel @Inject constructor(
             }
     }
 
-    fun drawBitmap(emojiText:String) : BitmapDescriptor? {
+    fun drawBitmapIcon(emojiText:String) : BitmapDescriptor? {
         return emojiText.takeIf { it.isNotEmpty() }?.let {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)
             paint.apply {
                 style = Paint.Style.FILL
+                color = Color.WHITE
                 textSize = 100f
                 textAlign = Paint.Align.CENTER
-                color = Color.WHITE
             }
-            val strokePaint = Paint()
-            strokePaint.apply {
-                style = Paint.Style.STROKE
-                color = Color.BLACK
-                strokeWidth = 10f
-            }
+
             val baseLine = -paint.ascent()
-            val width = (paint.measureText(it) + 20f).toInt()
+            val width = (paint.measureText(it) + 20f).toInt() // 사각형 너비
             val height = (baseLine + paint.descent() + 20f).toInt()
-            val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // 사각형을 그릴 캔버스 너비
+
             val rect = Rect(0, 0, width, height)
             val rectF = RectF(rect)
             Canvas(image).apply {
-                drawRoundRect(rectF, 10f, 10f, paint)
-                drawRoundRect(rectF, 10f, 10f, strokePaint)
+                drawRoundRect(rectF, 20f, 20f, paint)
                 drawText(it, width / 2f, (height+50) / 2f, paint)
             }
             BitmapDescriptorFactory.fromBitmap(image)
         }
     }
 
-    fun getRegionsList(textField:String) : List<Regions> {
-        return regionsList.filter {
-            "${it.city} ${it.gu} ${it.dong}".contains(textField)
-        }
+    fun getSearchingRegionsList(textField:String) = viewModelScope.launch {
+        getSearchedRegionsUseCase.invoke("%$textField%")
+            .collectLatest {
+                regionsList = it
+            }
     }
 
-    fun checkRegionsData(applicationContext: Context) = viewModelScope.launch {
-        regionsList = checkRegionsDbDataUsecase.invoke(applicationContext)
+    fun getCurrentLocWeatherInfo(longtitude:Double, latitude:Double) = viewModelScope.launch {
+        val closestRegion = getClosesRegionInDbUseCase.invoke(longtitude, latitude)
+        getWeatherInfo(closestRegion)
+        Log.i("아현 location", "$closestRegion")
+    }
+
+    fun checkDbAndInsertData(applicationContext: Context) {
+        dbLoading.value = true
+        CoroutineScope(Dispatchers.IO).launch {
+            checkRegionsDbDataUsecase.invoke(applicationContext)
+            dbLoading.value = false
+        }
     }
 }

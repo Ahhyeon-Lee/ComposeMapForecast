@@ -49,9 +49,9 @@ fun TranslateScreen(
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = sttViewModel.sourceLanguage.value,
+                value = sttViewModel.sttText.value,
                 onValueChange = {
-                    sttViewModel.setSourceLanguage(it)
+                    sttViewModel.setSttText(it)
                     viewModel.setSourceText(it)
                 },
                 modifier = Modifier
@@ -67,7 +67,7 @@ fun TranslateScreen(
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 50.dp),
             onClick = {
-                viewModel.translateText(sttViewModel.sourceLanguage.value)
+                viewModel.translateText(sttViewModel.sttText.value)
                 focusManager.clearFocus()
             }) {
             Text(text = "번역")

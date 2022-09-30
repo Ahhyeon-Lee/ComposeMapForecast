@@ -1,6 +1,5 @@
 package com.example.domain.usecase.map
 
-import com.example.datalayer.remote.model.NetworkWeatherForecastData
 import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
@@ -16,7 +15,7 @@ class GetWeatherInfoUsecase(
     : Flow<ResultUiState<WeatherForecast>> {
         var weather = "-1"
         return weatherRepository.
-        getWeatherInfo(regionData.nx, regionData.ny, dateTimeInfoUseCase.getDate("yyyyMMdd"), dateTimeInfoUseCase.getTime("HHmm"))
+        getWeatherInfo(regionData.nx, regionData.ny, dateTimeInfoUseCase.getDate("yyyyMMdd"), dateTimeInfoUseCase.getTimeOneHourBefore("HHmm"))
             .map {
                 it.response?.body?.items?.item?.filter {
                     it.category == "PTY" || it.category == "SKY"

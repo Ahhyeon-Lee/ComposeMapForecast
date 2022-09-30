@@ -10,4 +10,6 @@
 
     <color name="sky">#038CF4</color>
     <color name="light_gray">#DADADA</color>
+    <color name="darker_gray">#6E6E6E</color>
+    <color name="white_transparent">#9EFFFFFF</color>
 </resources>

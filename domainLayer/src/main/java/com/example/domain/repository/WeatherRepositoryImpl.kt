@@ -14,9 +14,9 @@ class WeatherRepositoryImpl(
     override suspend fun getWeatherInfo(
         nx:String, ny:String, date:String, time:String
     ): Flow<NetworkWeatherForecastData> =
-        flowOf(
-            weatherApiDataSource.getWeatherInfo(nx = nx, ny = ny, date = date, time = time)
-        )
+        flow {
+            emit(weatherApiDataSource.getWeatherInfo(nx = nx, ny = ny, date = date, time = time))
+        }
         .flowOn(Dispatchers.IO)
         .catch { e->
 //            collect.invoke(ResultNetworkState.Error(e))
