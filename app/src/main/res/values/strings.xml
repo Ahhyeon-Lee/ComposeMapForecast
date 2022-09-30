@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">map_translation</string>
     <string name="google_api_key" translatable="false">AIzaSyB5CT4h3QE66WnIoazTfpLrakScsavOEuA</string>
-
     <string name="map_history">날씨 검색 기록</string>
-
-
+    <string name="map">지도</string>
+    <string name="translate">번역</string>
+    <string name="map_history">지도 히스토리</string>
+    <string name="translate_history">번역 히스토리</string>
+    <string name="clova_stt">클로바STT</string>
+    <string name="text_input">텍스트 입력</string>
+    <string name=" address_input">시, 구, 동 검색</string>
+    <string name=" address_input">시, 구, 동 입력</string>
+    <string name="address_input">시, 구, 동 검색</string>
 </resources>

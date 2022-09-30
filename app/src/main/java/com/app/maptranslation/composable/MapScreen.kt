@@ -33,13 +33,16 @@ import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.app.maptranslation.viewmodel.SttRecognizerViewModel
 import com.example.domain.model.Regions
+import com.example.domain.model.TranslateHistoryData
 import com.example.domain.model.WeatherForecast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -82,7 +85,7 @@ fun MyApp(
             TranslateScreen()
         }
         composable(TRANSLATE_HISTORY_SCREEN) {
-
+            HistoryScreen()
         }
         composable(CLOVA_TEST) {
             ClovaTest()
@@ -123,12 +126,12 @@ fun HomeScreen(
                         navController.navigate(WEATHER_SEARCH_SCREEN)
                     }
                 }) {
-                    Text(text = "지도")
+                    Text(text = stringResource(id = R.string.map))
                 }
                 Button(onClick = {
                     navController.navigate(MAP_HISTORY_SCREEN)
                 }) {
-                    Text(text = "지도 히스토리")
+                    Text(text = stringResource(id = R.string.map_history))
                 }
             }
 
@@ -138,18 +141,18 @@ fun HomeScreen(
                 Button(onClick = {
                     navController.navigate(TRANSLATE_SCREEN)
                 }) {
-                    Text(text = "번역")
+                    Text(text = stringResource(id = R.string.translate))
                 }
                 Button(onClick = {
                     navController.navigate(TRANSLATE_HISTORY_SCREEN)
                 }) {
-                    Text(text = "번역 히스토리")
+                    Text(text = stringResource(id = R.string.translate_history))
                 }
             }
             Button(onClick = {
                 navController.navigate(CLOVA_TEST)
             }) {
-                Text(text = "클로바 테스트")
+                Text(text = stringResource(id = R.string.clova_stt))
             }
         }
     }
@@ -252,7 +255,7 @@ fun TextFieldBox(
                     TextField(
                         value = sttViewModel.sttText.value,
                         onValueChange = { sttViewModel.setSttText(it) },
-                        placeholder = { Text(text = "시, 구, 동 검색") },
+                        placeholder = { Text(text = stringResource(id = R.string.address_input)) },
                         modifier = Modifier
                             .weight(1f)
                             .background(Color.White)
