@@ -15,9 +15,7 @@ import com.example.domain.repository.translate.TranslateRepositoryImpl
 import com.example.domain.usecase.GetDateTimeInfoUseCase
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
-import com.example.domain.usecase.translate.GetLanguageCodeUseCase
-import com.example.domain.usecase.translate.GetLanguageTargetUseCase
-import com.example.domain.usecase.translate.TranslateUseCase
+import com.example.domain.usecase.translate.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,6 +58,16 @@ object UsecaseModule {
     fun provideTranslateUseCase(
         repository: TranslateRepository
     ) : TranslateUseCase = TranslateUseCase(repository)
+
+    @Provides
+    fun provideInsertTranslateHistoryUseCase(
+        repository: LanguageRepository
+    ) : InsertTranslateHistoryUseCase = InsertTranslateHistoryUseCase(repository)
+
+    @Provides
+    fun provideGetTranslateHistoryUseCase(
+        repository: LanguageRepository
+    ) : GetTranslateHistoryUseCase = GetTranslateHistoryUseCase(repository)
 }
 
 @Module

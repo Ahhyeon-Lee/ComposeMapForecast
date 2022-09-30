@@ -8,10 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.LanguageCodeData
 import com.example.domain.model.LanguageTargetData
+import com.example.domain.model.TranslateHistoryData
 import com.example.domain.model.TranslateState
-import com.example.domain.usecase.translate.GetLanguageCodeUseCase
-import com.example.domain.usecase.translate.GetLanguageTargetUseCase
-import com.example.domain.usecase.translate.TranslateUseCase
+import com.example.domain.usecase.translate.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -21,7 +20,9 @@ import javax.inject.Inject
 class TranslateViewModel @Inject constructor(
     private val languageCodeUseCase: GetLanguageCodeUseCase,
     private val languageTargetUseCase: GetLanguageTargetUseCase,
-    private val translateUseCase: TranslateUseCase
+    private val translateUseCase: TranslateUseCase,
+    private val insertTranslateHistoryUseCase: InsertTranslateHistoryUseCase,
+    private val getTranslateHistoryUseCase : GetTranslateHistoryUseCase
 ) : ViewModel() {
 
     private val _sourceText = mutableStateOf("")
@@ -43,6 +44,9 @@ class TranslateViewModel @Inject constructor(
 
     private val _selectTarget = mutableStateOf(LanguageCodeData())
     val selectTarget: State<LanguageCodeData> = _selectTarget
+
+    private val _historyList = mutableStateOf(listOf<TranslateHistoryData>())
+    val historyList: State<List<TranslateHistoryData>> = _historyList
 
     fun getLanguageCode(context: Context) = viewModelScope.launch{
         if(languageCodeList.value.isNotEmpty()) return@launch
@@ -91,8 +95,13 @@ class TranslateViewModel @Inject constructor(
                     TranslateState.FAIL -> TODO()
                     TranslateState.SUCCESS -> {
                         _targetText.value = it.translatedText ?: ""
+                        insertTranslateHistoryUseCase.invoke(selectSource.value.code, text, selectTarget.value.code, _targetText.value)
                     }
                 }
             }
+    }
+
+    fun getTranslateHistory() = viewModelScope.launch {
+        _historyList.value = getTranslateHistoryUseCase.invoke()
     }
 }

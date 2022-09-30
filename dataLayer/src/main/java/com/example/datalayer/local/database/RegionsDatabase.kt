@@ -6,7 +6,7 @@ import com.example.datalayer.local.dao.TranslateRoomDao
 import com.example.datalayer.local.dao.RegionsRoomDao
 import com.example.datalayer.local.model.*
 
-@Database(entities = [RegionRowEntity::class, LanguageCodeEntity::class, LanguageTargetEntity::class], version = 1)
+@Database(entities = [RegionRowEntity::class, LanguageCodeEntity::class, LanguageTargetEntity::class, TranslateHistoryEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun regionDao() : RegionsRoomDao
