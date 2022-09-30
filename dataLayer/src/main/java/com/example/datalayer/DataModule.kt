@@ -9,6 +9,10 @@ import com.example.datalayer.remote.datasource.TranslateApiDataSource
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
 import com.example.datalayer.remote.service.TranslateApiService
 import com.example.datalayer.remote.service.WeatherApiService
+import com.example.domain.repository.RegionsDBRepository
+import com.example.domain.repository.WeatherRepository
+import com.example.domain.repository.translate.LanguageRepository
+import com.example.domain.repository.translate.TranslateRepository
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -22,6 +26,39 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
+
+@Module
+@InstallIn(SingletonComponent::class)
+object RepositoryModule {
+
+    @Singleton
+    @Provides
+    fun provideRegionsDBRepository(
+        localDataSource: RegionsRoomDataSource
+    ): RegionsDBRepository {
+        return com.example.datalayer.repository.RegionsDBRepositoryImpl(localDataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWeatherRepository(
+        weatherApiDataSource: WeatherApiDataSource
+    ): WeatherRepository {
+        return com.example.datalayer.repository.WeatherRepositoryImpl(weatherApiDataSource)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLanguageRepository(
+        dataSource: TranslateRoomDataSource
+    ): LanguageRepository = com.example.datalayer.repository.LanguageRepositoryImpl(dataSource)
+
+    @Singleton
+    @Provides
+    fun provideTranslateRepository(
+        dataSource: TranslateApiDataSource
+    ): TranslateRepository = com.example.datalayer.repository.TranslateRepositoryImpl(dataSource)
+}
 
 @Module
 @InstallIn(SingletonComponent::class)

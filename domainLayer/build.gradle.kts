@@ -57,6 +57,5 @@ dependencies {
     kapt(Libraries.Room.ROOM_COMPILER)
     implementation(Libraries.Room.ROOM_KTX)
 
-    implementation(project(":dataLayer"))
     implementation(project(":util"))
 }

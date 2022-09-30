@@ -122,7 +122,6 @@ fun HomeScreen(
                 Button(onClick = {
                     checkPermissions(locationPermissionState) {
                         mapViewModel.checkDbAndInsertData(context.applicationContext)
-                        markCurrentLocWeatherInfo(context, mapViewModel)
                         navController.navigate(WEATHER_SEARCH_SCREEN)
                     }
                 }) {
@@ -161,6 +160,7 @@ fun HomeScreen(
 @Composable
 fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
     if (!viewModel.dbLoading.value) {
+        markCurrentLocWeatherInfo(LocalContext.current, viewModel)
         val weatherData = viewModel.weatherState
         GoogleMapBox(navController, viewModel, listOf(weatherData))
     } else {

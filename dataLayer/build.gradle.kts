@@ -60,5 +60,6 @@ dependencies {
     implementation(Libraries.Hilt.HILT_VIEWMODEL)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
+    implementation(project(":domainLayer"))
     implementation(project(":util"))
 }

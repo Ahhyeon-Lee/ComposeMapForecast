@@ -1,9 +1,9 @@
-package com.example.domain.repository
+package com.example.datalayer.repository
 
 import android.util.Log
-import com.example.datalayer.ResultNetworkState
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
 import com.example.datalayer.remote.model.NetworkWeatherForecastData
+import com.example.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 

@@ -1,4 +1,4 @@
-package com.example.domain.repository.translate
+package com.example.datalayer.repository
 
 import com.example.datalayer.local.datasource.TranslateRoomDataSource
 import com.example.datalayer.local.model.LanguageCodeEntity
@@ -7,6 +7,7 @@ import com.example.datalayer.local.model.TranslateHistoryEntity
 import com.example.domain.model.LanguageCodeData
 import com.example.domain.model.LanguageTargetData
 import com.example.domain.model.TranslateHistoryData
+import com.example.domain.repository.translate.LanguageRepository
 
 class LanguageRepositoryImpl(
     private val dataSource : TranslateRoomDataSource

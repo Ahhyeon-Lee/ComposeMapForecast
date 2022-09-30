@@ -1,9 +1,10 @@
-package com.example.domain.repository.translate
+package com.example.datalayer.repository
 
 import android.util.Log
 import com.example.datalayer.remote.datasource.TranslateApiDataSource
 import com.example.domain.model.TranslateResult
 import com.example.domain.model.TranslateState
+import com.example.domain.repository.translate.TranslateRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 

@@ -7,7 +7,5 @@
     <string name="translate_history">翻訳履歴</string>
     <string name="clova_stt">CLOVA STT</string>
     <string name="text_input">テキスト入力</string>
-    <string name=" address_input">住所検索</string>
-    <string name=" address_input">住所検索</string>
     <string name="address_input">住所検索</string>
 </resources>
