@@ -7,8 +7,9 @@ import com.example.domain.model.TranslateState
 import com.example.domain.repository.translate.TranslateRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-class TranslateRepositoryImpl(
+class TranslateRepositoryImpl @Inject constructor(
     private val dataSource: TranslateApiDataSource
 ): TranslateRepository {
     override suspend fun doTranslateText(source: String, target: String, text: String): Flow<TranslateResult> =

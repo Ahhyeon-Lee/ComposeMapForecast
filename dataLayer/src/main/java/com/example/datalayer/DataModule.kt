@@ -9,18 +9,22 @@ import com.example.datalayer.remote.datasource.TranslateApiDataSource
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
 import com.example.datalayer.remote.service.TranslateApiService
 import com.example.datalayer.remote.service.WeatherApiService
+import com.example.datalayer.repository.LanguageRepositoryImpl
+import com.example.datalayer.repository.RegionsDBRepositoryImpl
+import com.example.datalayer.repository.TranslateRepositoryImpl
+import com.example.datalayer.repository.WeatherRepositoryImpl
 import com.example.domain.repository.RegionsDBRepository
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.repository.translate.LanguageRepository
 import com.example.domain.repository.translate.TranslateRepository
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,49 +33,40 @@ import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+abstract class RepositoryModule {
 
-    @Singleton
-    @Provides
-    fun provideRegionsDBRepository(
-        localDataSource: RegionsRoomDataSource
-    ): RegionsDBRepository {
-        return com.example.datalayer.repository.RegionsDBRepositoryImpl(localDataSource)
-    }
+    @Binds
+    abstract fun bindRegionsDBRepository (
+        regionsDBRepositoryImpl: RegionsDBRepositoryImpl
+    ): RegionsDBRepository
 
-    @Singleton
-    @Provides
-    fun provideWeatherRepository(
-        weatherApiDataSource: WeatherApiDataSource
-    ): WeatherRepository {
-        return com.example.datalayer.repository.WeatherRepositoryImpl(weatherApiDataSource)
-    }
+    @Binds
+    abstract fun bindWeatherRepository (
+        weatherRepositoryImpl: WeatherRepositoryImpl
+    ): WeatherRepository
 
-    @Singleton
-    @Provides
-    fun provideLanguageRepository(
-        dataSource: TranslateRoomDataSource
-    ): LanguageRepository = com.example.datalayer.repository.LanguageRepositoryImpl(dataSource)
+    @Binds
+    abstract fun bindLanguageRepository(
+        languageRepositoryImpl: LanguageRepositoryImpl
+    ): LanguageRepository
 
-    @Singleton
-    @Provides
-    fun provideTranslateRepository(
-        dataSource: TranslateApiDataSource
-    ): TranslateRepository = com.example.datalayer.repository.TranslateRepositoryImpl(dataSource)
+    @Binds
+    abstract fun bindTranslateRepository(
+        translateRepositoryImpl: TranslateRepositoryImpl
+    ): TranslateRepository
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
 
-    @Singleton
     @Provides
     fun provideRegionsRoomDataSource(
         database: AppDatabase
     ): RegionsRoomDataSource {
         return RegionsRoomDataSource(database.regionDao())
     }
-    @Singleton
+
     @Provides
     fun provideWeatherApiDataSource(
         @RetrofitNetworkModule.Weather apiService: WeatherApiService
@@ -79,14 +74,11 @@ object DataSourceModule {
         return WeatherApiDataSource(apiService)
     }
 
-    @Singleton
     @Provides
     fun provideTranslateRoomDataSource(
         database: AppDatabase
     ): TranslateRoomDataSource = TranslateRoomDataSource(database.translateDao())
 
-
-    @Singleton
     @Provides
     fun provideTranslateApiDataSource(
         @RetrofitNetworkModule.Translation service: TranslateApiService
@@ -97,7 +89,6 @@ object DataSourceModule {
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-    @Singleton
     @Provides
     fun provideRegionsDataBase(
         @ApplicationContext applicationContext: Context
@@ -122,19 +113,17 @@ object RetrofitNetworkModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class Translation
 
-    @Provides
     @Weather
+    @Provides
     fun provideWeatherApiBaseUrl() = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
 
-    @Provides
     @Translation
+    @Provides
     fun provideTranslationApiBaseUrl() = "https://openapi.naver.com/"
 
-    @Singleton
     @Provides
     fun provideGson() : Gson = GsonBuilder().setLenient().create()
 
-    @Singleton
     @Provides
     fun provideLoggingInterceptor() : HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
@@ -142,7 +131,6 @@ object RetrofitNetworkModule {
         }
     }
 
-    @Singleton
     @Provides
     fun provideOkHttpClient(
         interceptor: HttpLoggingInterceptor
@@ -152,9 +140,8 @@ object RetrofitNetworkModule {
             .build()
     }
 
-    @Singleton
-    @Provides
     @Weather
+    @Provides
     fun provideWeatherRetrofit(
         okHttpClient: OkHttpClient,
         @Weather BASE_URL: String // baseurl 추가되면 retrofit 객체 반환 함수와 baseurl 제공 함수 추가 해서 각각에 @Qualifier 추가해서 지정해주기.
@@ -166,9 +153,8 @@ object RetrofitNetworkModule {
             .build()
     }
 
-    @Singleton
-    @Provides
     @Translation
+    @Provides
     fun provideTranslationRetrofit(
         okHttpClient: OkHttpClient,
         @Translation BASE_URL: String // baseurl 추가되면 retrofit 객체 반환 함수와 baseurl 제공 함수 추가 해서 각각에 @Qualifier 추가해서 지정해주기.
@@ -180,16 +166,14 @@ object RetrofitNetworkModule {
             .build()
     }
 
-    @Singleton
-    @Provides
     @Weather
+    @Provides
     fun provideWeatherApiService(
         @Weather retrofit: Retrofit
     ) : WeatherApiService = retrofit.create(WeatherApiService::class.java)
 
-    @Singleton
-    @Provides
     @Translation
+    @Provides
     fun provideTranslateApiService(
         @Translation retrofit: Retrofit
     ) : TranslateApiService = retrofit.create(TranslateApiService::class.java)

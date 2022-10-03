@@ -122,6 +122,7 @@ fun HomeScreen(
                 Button(onClick = {
                     checkPermissions(locationPermissionState) {
                         mapViewModel.checkDbAndInsertData(context.applicationContext)
+                        markCurrentLocWeatherInfo(context, mapViewModel)
                         navController.navigate(WEATHER_SEARCH_SCREEN)
                     }
                 }) {
@@ -160,7 +161,6 @@ fun HomeScreen(
 @Composable
 fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
     if (!viewModel.dbLoading.value) {
-        markCurrentLocWeatherInfo(LocalContext.current, viewModel)
         val weatherData = viewModel.weatherState
         GoogleMapBox(navController, viewModel, listOf(weatherData))
     } else {
@@ -371,9 +371,10 @@ fun markCurrentLocWeatherInfo(context: Context, viewModel: MapScreenViewModel, c
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 Log.i("아현", "long : ${location.longitude} / lat : ${location.latitude}")
-                viewModel.getCurrentLocWeatherInfo(location.longitude, location.latitude)
                 cameraPositionState?.move(CameraUpdateFactory.newLatLng(LatLng(location.latitude, location.longitude)))
-                saveSearchedRegionsWeatherInfo()
+                if (!viewModel.dbLoading.value) {
+                    viewModel.getCurrentLocWeatherInfo(location.longitude, location.latitude)
+                }
             }
     }
 }
@@ -381,9 +382,4 @@ fun markCurrentLocWeatherInfo(context: Context, viewModel: MapScreenViewModel, c
 fun markWeatherInfo(viewModel: MapScreenViewModel, regions: Regions, cameraPositionState: CameraPositionState) {
     viewModel.getWeatherInfo(regions)
     cameraPositionState.move(CameraUpdateFactory.newLatLng(LatLng(regions.latitude, regions.longtitude)))
-    saveSearchedRegionsWeatherInfo()
-}
-
-fun saveSearchedRegionsWeatherInfo() {
-
 }

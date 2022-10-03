@@ -5,8 +5,9 @@ import com.example.datalayer.local.model.LanguageTargetEntity
 import com.example.domain.model.LanguageTargetData
 import com.example.domain.repository.translate.LanguageRepository
 import com.example.util.ExcelReadHelper
+import javax.inject.Inject
 
-class GetLanguageTargetUseCase(
+class GetLanguageTargetUseCase @Inject constructor(
     private val repository: LanguageRepository
 ) {
     suspend fun invoke(applicationContext: Context) : List<LanguageTargetData> =

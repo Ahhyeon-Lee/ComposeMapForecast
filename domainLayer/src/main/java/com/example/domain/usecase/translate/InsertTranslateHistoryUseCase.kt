@@ -2,8 +2,9 @@ package com.example.domain.usecase.translate
 
 import com.example.datalayer.local.model.TranslateHistoryEntity
 import com.example.domain.repository.translate.LanguageRepository
+import javax.inject.Inject
 
-class InsertTranslateHistoryUseCase(
+class InsertTranslateHistoryUseCase @Inject constructor(
     private val repository: LanguageRepository
 ) {
     suspend fun invoke(sourceCode: String, sourceText: String, targetCode: String, targetText: String) {

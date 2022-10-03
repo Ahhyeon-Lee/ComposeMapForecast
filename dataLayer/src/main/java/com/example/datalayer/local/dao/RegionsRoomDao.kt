@@ -3,8 +3,8 @@ package com.example.datalayer.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import com.example.datalayer.local.model.RegionRowEntity
+import com.example.datalayer.local.model.SearchedRegionsWeatherEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,9 +21,12 @@ interface RegionsRoomDao {
             "LIMIT 1")
     suspend fun getClosestRegion(longtitude:Double, latitude:Double) : RegionRowEntity
 
+    @Query("SELECT * FROM SearchedRegionsWeatherEntity")
+    suspend fun getSearchedRegionsWeatherList() : List<SearchedRegionsWeatherEntity>
+
+    @Query("SELECT * FROM SearchedRegionsWeatherEntity WHERE :date = date")
+    suspend fun getSameDaySearchedRegionsWeatherList(date:String) : List<SearchedRegionsWeatherEntity>
+
     @Insert
     suspend fun insert(vararg region : RegionRowEntity)
-
-    @Update
-    suspend fun updateRegions(vararg region : RegionRowEntity)
 }

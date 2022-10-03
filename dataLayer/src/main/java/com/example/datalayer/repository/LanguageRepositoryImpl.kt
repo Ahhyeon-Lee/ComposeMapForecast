@@ -8,8 +8,9 @@ import com.example.domain.model.LanguageCodeData
 import com.example.domain.model.LanguageTargetData
 import com.example.domain.model.TranslateHistoryData
 import com.example.domain.repository.translate.LanguageRepository
+import javax.inject.Inject
 
-class LanguageRepositoryImpl(
+class LanguageRepositoryImpl @Inject constructor(
     private val dataSource : TranslateRoomDataSource
 ) : LanguageRepository {
     override suspend fun getLanguageCode(): List<LanguageCodeData> =

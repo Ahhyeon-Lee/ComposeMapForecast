@@ -2,8 +2,9 @@ package com.example.domain.usecase
 
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class GetDateTimeInfoUseCase {
+class GetDateTimeInfoUseCase @Inject constructor() {
     fun getDate(format:String) : String {
         val dateFormat = SimpleDateFormat(format, Locale.getDefault())
         val date = Date()

@@ -12,7 +12,7 @@ import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
-import com.example.domain.usecase.map.GetClosesRegionInDbUseCase
+import com.example.domain.usecase.map.GetClosestRegionInDbUseCase
 import com.example.domain.usecase.map.GetSearchedRegionsUseCase
 import com.example.domain.usecase.map.GetWeatherInfoUsecase
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class MapScreenViewModel @Inject constructor(
     private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
     private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
-    private val getClosesRegionInDbUseCase: GetClosesRegionInDbUseCase,
+    private val getClosestRegionInDbUseCase: GetClosestRegionInDbUseCase,
     private val getWeatherInfoUsecase : GetWeatherInfoUsecase
 ) : ViewModel() {
 
@@ -47,6 +47,7 @@ class MapScreenViewModel @Inject constructor(
                 when(it) {
                     is ResultUiState.Success -> {
                         weatherState = it.data
+
                         Log.i("아현", "$it")
                     }
                     else -> {
@@ -89,7 +90,7 @@ class MapScreenViewModel @Inject constructor(
     }
 
     fun getCurrentLocWeatherInfo(longtitude:Double, latitude:Double) = viewModelScope.launch {
-        val closestRegion = getClosesRegionInDbUseCase.invoke(longtitude, latitude)
+        val closestRegion = getClosestRegionInDbUseCase.invoke(longtitude, latitude)
         getWeatherInfo(closestRegion)
         Log.i("아현 location", "$closestRegion")
     }

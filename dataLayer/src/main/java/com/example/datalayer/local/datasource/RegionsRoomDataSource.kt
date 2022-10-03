@@ -2,12 +2,12 @@ package com.example.datalayer.local.datasource
 
 import com.example.datalayer.local.model.RegionRowEntity
 import com.example.datalayer.local.dao.RegionsRoomDao
+import com.example.datalayer.local.model.SearchedRegionsWeatherEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
-class RegionsRoomDataSource(
+class RegionsRoomDataSource (
     private val regionDao : RegionsRoomDao
 ) {
 
@@ -27,5 +27,13 @@ class RegionsRoomDataSource(
         withContext(Dispatchers.IO) {
             regionDao.insert(regionRowEntity)
         }
+    }
+
+    suspend fun getSearchedRegionsWeatherList() : List<SearchedRegionsWeatherEntity> {
+        return regionDao.getSearchedRegionsWeatherList()
+    }
+
+    suspend fun getSameDaySearchedRegionsWeatherList(date: String) : List<SearchedRegionsWeatherEntity> {
+        return regionDao.getSameDaySearchedRegionsWeatherList(date)
     }
 }
