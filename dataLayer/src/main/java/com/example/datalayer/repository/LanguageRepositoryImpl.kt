@@ -23,10 +23,29 @@ class LanguageRepositoryImpl @Inject constructor(
             LanguageTargetData(it.source, it.target)
         }
 
-    override suspend fun insertLanguageCode(items: List<LanguageCodeEntity>) = dataSource.insertLanguageCode(items)
-    override suspend fun insertLanguageTarget(items: List<LanguageTargetEntity>) = dataSource.insertLanguageTarget(items)
+    override suspend fun insertLanguageCode(items: List<LanguageCodeData>) {
+        dataSource.insertLanguageCode(items.map {
+            LanguageCodeEntity(it.code, it.language)
+        })
+    }
+    override suspend fun insertLanguageTarget(items: List<LanguageTargetData>) {
+        dataSource.insertLanguageTarget(items.map {
+            LanguageTargetEntity(it.source, it.target)
+        })
+    }
 
-    override suspend fun insertTranslateHistory(item: TranslateHistoryEntity) = dataSource.insertTranslateHistory(item)
+    override suspend fun insertTranslateHistory(item: TranslateHistoryData) {
+        dataSource.insertTranslateHistory(
+            TranslateHistoryEntity(
+                item.sourceCode,
+                item.sourceText,
+                item.targetCode,
+                item.targetText,
+                System.currentTimeMillis()
+            )
+        )
+    }
+
     override suspend fun getTranslateHistory(): List<TranslateHistoryData> =
         dataSource.getTranslateHistory().map {
             TranslateHistoryData(it.sourceCode, it.sourceLanguage, it.sourceText, it.targetCode, it.targetLanguage, it.targetText)
