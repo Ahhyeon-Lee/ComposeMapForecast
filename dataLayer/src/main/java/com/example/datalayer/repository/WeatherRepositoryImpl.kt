@@ -2,11 +2,9 @@ package com.example.datalayer.repository
 
 import android.util.Log
 import com.example.datalayer.remote.datasource.WeatherApiDataSource
-import com.example.datalayer.remote.model.NetworkWeatherForecastData
-import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
-import com.example.domain.repository.WeatherRepository
+import com.example.domain.repository.map.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -23,12 +21,16 @@ class WeatherRepositoryImpl @Inject constructor(
         }
         .flowOn(Dispatchers.IO)
         .transform {
-            var weather = "-1"
-            it.response?.body?.items?.item?.filter {
-                it.category == "PTY" || it.category == "SKY"
-            }?.let {
-                val map = it.map { it.category to it.fcstValue }.toMap()
-                weather = when {
+            val ptyData = it.response?.body?.items?.item?.firstOrNull { item -> item.category == "PTY" }
+            val skyData = it.response?.body?.items?.item?.firstOrNull { item -> item.category == "SKY" }
+
+            val map = mapOf(
+                (ptyData?.category ?: "PTY") to (ptyData?.fcstValue),
+                (skyData?.category ?: "SKY") to (skyData?.fcstValue),
+            )
+
+            val weather = if (!map["PTY"].isNullOrEmpty() && !map["SKY"].isNullOrEmpty()) {
+                when {
                     map["PTY"] == "0" -> with(map["SKY"] ?: "-1") {
                         when(this) {
                             "1" -> "0" // 맑음
@@ -45,7 +47,7 @@ class WeatherRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-            }
+            } else "-1"
 
             emit(
                 WeatherForecast(
@@ -56,7 +58,9 @@ class WeatherRepositoryImpl @Inject constructor(
                     regionData.ny,
                     regionData.longtitude,
                     regionData.latitude,
-                    weather
+                    weather,
+                    date,
+                    ptyData?.fcstTime ?: time
                 )
             )
         }

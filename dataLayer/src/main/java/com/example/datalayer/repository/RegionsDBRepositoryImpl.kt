@@ -2,8 +2,10 @@ package com.example.datalayer.repository
 
 import com.example.datalayer.local.datasource.RegionsRoomDataSource
 import com.example.datalayer.local.model.RegionRowEntity
+import com.example.datalayer.local.model.WeatherHistoryEntity
 import com.example.domain.model.Regions
-import com.example.domain.repository.RegionsDBRepository
+import com.example.domain.model.WeatherForecast
+import com.example.domain.repository.map.RegionsDBRepository
 import jxl.Cell
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,7 @@ class RegionsDBRepositoryImpl @Inject constructor(
 ) : RegionsDBRepository {
 
     override suspend fun checkRegionsDbData(): List<Regions> {
-        return roomDataSource.getRegionsData().map {
+        return roomDataSource.getAllRegionsData().map {
             Regions(
                 city = it.city,
                 gu = it.gu ?: "",
@@ -73,6 +75,23 @@ class RegionsDBRepositoryImpl @Inject constructor(
                 cell[6].contents.toDoubleOrNull() ?: 0.0
             )
         )
+    }
 
+    override suspend fun getAllWeatherHistoryList(): List<WeatherForecast> {
+        return roomDataSource.getAllWeatherHistoryList().map {
+            it.weather
+        }
+    }
+
+    override suspend fun getSameDayWeatherHistoryList(date: String) : List<WeatherForecast> {
+        return roomDataSource.getSameDayWeatherHistoryList(date).map {
+            it.weather
+        }
+    }
+
+    override suspend fun insertWeatherHistoryData(weather: WeatherForecast) {
+        roomDataSource.insertWeatherHistoryData(
+            WeatherHistoryEntity(weather, weather.date)
+        )
     }
 }

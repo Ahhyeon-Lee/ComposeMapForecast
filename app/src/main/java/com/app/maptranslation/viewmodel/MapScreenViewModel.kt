@@ -6,15 +6,13 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
-import com.example.domain.usecase.map.CheckRegionsDbDataUseCase
-import com.example.domain.usecase.map.GetClosestRegionInDbUseCase
-import com.example.domain.usecase.map.GetSearchedRegionsUseCase
-import com.example.domain.usecase.map.GetWeatherInfoUsecase
+import com.example.domain.usecase.map.*
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +27,7 @@ class MapScreenViewModel @Inject constructor(
     private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
     private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
     private val getClosestRegionInDbUseCase: GetClosestRegionInDbUseCase,
+    private val insertWeatherHistoryDataInDbUseCase: InsertWeatherHistoryDataInDbUseCase,
     private val getWeatherInfoUsecase : GetWeatherInfoUsecase
 ) : ViewModel() {
 
@@ -47,7 +46,7 @@ class MapScreenViewModel @Inject constructor(
                 when(it) {
                     is ResultUiState.Success -> {
                         weatherState = it.data
-
+                        insertWeatherHistoryDataInDbUseCase.invoke(it.data)
                         Log.i("아현", "$it")
                     }
                     else -> {
@@ -55,31 +54,6 @@ class MapScreenViewModel @Inject constructor(
                     }
                 }
             }
-    }
-
-    fun drawBitmapIcon(emojiText:String) : BitmapDescriptor? {
-        return emojiText.takeIf { it.isNotEmpty() }?.let {
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.apply {
-                style = Paint.Style.FILL
-                color = Color.WHITE
-                textSize = 100f
-                textAlign = Paint.Align.CENTER
-            }
-
-            val baseLine = -paint.ascent()
-            val width = (paint.measureText(it) + 20f).toInt() // 사각형 너비
-            val height = (baseLine + paint.descent() + 20f).toInt()
-            val image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // 사각형을 그릴 캔버스 너비
-
-            val rect = Rect(0, 0, width, height)
-            val rectF = RectF(rect)
-            Canvas(image).apply {
-                drawRoundRect(rectF, 20f, 20f, paint)
-                drawText(it, width / 2f, (height+50) / 2f, paint)
-            }
-            BitmapDescriptorFactory.fromBitmap(image)
-        }
     }
 
     fun getSearchingRegionsList(textField:String) = viewModelScope.launch {
@@ -102,4 +76,6 @@ class MapScreenViewModel @Inject constructor(
             dbLoading.value = false
         }
     }
+
+
 }

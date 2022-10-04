@@ -3,7 +3,7 @@ package com.example.domain.usecase.map
 import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
-import com.example.domain.repository.WeatherRepository
+import com.example.domain.repository.map.WeatherRepository
 import com.example.domain.usecase.GetDateTimeInfoUseCase
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

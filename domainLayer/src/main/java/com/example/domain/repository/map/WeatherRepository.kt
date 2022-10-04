@@ -1,4 +1,4 @@
-package com.example.domain.repository
+package com.example.domain.repository.map
 
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast

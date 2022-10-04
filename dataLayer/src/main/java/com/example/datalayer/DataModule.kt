@@ -13,8 +13,8 @@ import com.example.datalayer.repository.LanguageRepositoryImpl
 import com.example.datalayer.repository.RegionsDBRepositoryImpl
 import com.example.datalayer.repository.TranslateRepositoryImpl
 import com.example.datalayer.repository.WeatherRepositoryImpl
-import com.example.domain.repository.RegionsDBRepository
-import com.example.domain.repository.WeatherRepository
+import com.example.domain.repository.map.RegionsDBRepository
+import com.example.domain.repository.map.WeatherRepository
 import com.example.domain.repository.translate.LanguageRepository
 import com.example.domain.repository.translate.TranslateRepository
 import com.google.gson.Gson

@@ -1,7 +1,7 @@
 package com.example.domain.usecase.map
 
 import android.content.Context
-import com.example.domain.repository.RegionsDBRepository
+import com.example.domain.repository.map.RegionsDBRepository
 import com.example.util.ExcelReadHelper
 import javax.inject.Inject
 

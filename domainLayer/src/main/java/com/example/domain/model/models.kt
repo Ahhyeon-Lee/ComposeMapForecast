@@ -1,8 +1,10 @@
 package com.example.domain.model
 
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
 import com.example.domain.R
+import kotlinx.android.parcel.Parcelize
 
 data class Regions(
     val city:String = "",
@@ -15,6 +17,7 @@ data class Regions(
     val latitude:Double = 0.0
 )
 
+@Parcelize
 data class WeatherForecast(
     val city:String = "",
     val gu:String = "",
@@ -23,8 +26,10 @@ data class WeatherForecast(
     val ny: String="",
     val longtitude: Double = 0.0,
     val latitude: Double = 0.0,
-    val weather: String="" // 0:맑음, 1:비, 2:눈, 3:구름많음, 4:흐림
-) {
+    val weather: String="", // 0:맑음, 1:비, 2:눈, 3:구름많음, 4:흐림
+    val date: String="",
+    val time:String=""
+) : Parcelable {
     val icon = with(weather) {
         when(this) {
             "0" -> "☀"

@@ -13,7 +13,7 @@ import com.example.datalayer.local.model.*
         LanguageCodeEntity::class,
         LanguageTargetEntity::class,
         TranslateHistoryEntity::class,
-        SearchedRegionsWeatherEntity::class
+        WeatherHistoryEntity::class
     ],
     version = 1
 )

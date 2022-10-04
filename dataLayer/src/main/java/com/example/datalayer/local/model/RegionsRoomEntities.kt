@@ -20,10 +20,9 @@ data class RegionRowEntity(
 }
 
 @Entity
-data class SearchedRegionsWeatherEntity(
+data class WeatherHistoryEntity(
     @ColumnInfo(name = "weather") var weather:WeatherForecast,
-    @ColumnInfo(name = "date") var date:String,
-    @ColumnInfo(name = "time") var time:String
+    @ColumnInfo(name = "date") var date:String
 ) {
     @PrimaryKey(autoGenerate = true) var id:Long = 0
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -39,6 +40,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.app.maptranslation.R
+import com.app.maptranslation.util.BitmapDrawHelper
+import com.app.maptranslation.viewmodel.MapHistoryViewModel
 import com.app.maptranslation.viewmodel.MapScreenViewModel
 import com.app.maptranslation.viewmodel.SttRecognizerViewModel
 import com.example.domain.model.Regions
@@ -54,15 +57,18 @@ import com.google.maps.android.compose.*
 
 const val HOME_SCREEN = "HomeScreen"
 const val WEATHER_SEARCH_SCREEN = "WeatherSearchScreen"
-const val WEATHER_MAP_SCREEN = "WeatherMapScreen"
+const val WEATHER_MAP_SCREEN = "WeatherMapScreen/{date}"
 const val MAP_HISTORY_SCREEN = "MapHistoryScreen"
 const val TRANSLATE_SCREEN = "TranslateScreen"
 const val TRANSLATE_HISTORY_SCREEN = "TranslateHistoryScreen"
 const val CLOVA_TEST = "ClovaTest"
 
+const val WEATHER_HISTORY_SAVED_STATE = "WeatherHistroyList"
+
 @Composable
 fun MyApp(
-    mapViewModel: MapScreenViewModel = hiltViewModel()
+    mapViewModel: MapScreenViewModel = hiltViewModel(),
+    mapHistoryViewModel: MapHistoryViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -70,16 +76,20 @@ fun MyApp(
         startDestination = HOME_SCREEN
     ) {
         composable(HOME_SCREEN) {
-            HomeScreen(navController, mapViewModel)
+            HomeScreen(navController, mapViewModel, mapHistoryViewModel)
         }
         composable(WEATHER_SEARCH_SCREEN) {
             MapScreen(navController, mapViewModel)
         }
-        composable(WEATHER_MAP_SCREEN) {
-            GoogleMapBox(navController, mapViewModel, listOf())
+        composable(
+            WEATHER_MAP_SCREEN,
+            arguments = listOf(navArgument("date"){ type = NavType.StringType })
+        ) { backStackEntry ->
+            val historyDate = backStackEntry.arguments?.getString("date")
+            GoogleMapBox(navController, mapHistoryViewModel, listOf())
         }
         composable(MAP_HISTORY_SCREEN) {
-            MapHistoryScreen(navController)
+            MapHistoryScreen(navController, mapHistoryViewModel)
         }
         composable(TRANSLATE_SCREEN) {
             TranslateScreen()
@@ -97,7 +107,8 @@ fun MyApp(
 @Composable
 fun HomeScreen(
     navController: NavController,
-    mapViewModel: MapScreenViewModel
+    mapViewModel: MapScreenViewModel,
+    mapHistoryViewModel: MapHistoryViewModel
 ) {
     val context = LocalContext.current
 
@@ -129,6 +140,7 @@ fun HomeScreen(
                     Text(text = stringResource(id = R.string.map))
                 }
                 Button(onClick = {
+                    mapHistoryViewModel.getAllWeatherHistoryList()
                     navController.navigate(MAP_HISTORY_SCREEN)
                 }) {
                     Text(text = stringResource(id = R.string.map_history))
@@ -187,13 +199,13 @@ fun LoadingScreen() {
 @Composable
 fun GoogleMapBox(
     navController : NavController,
-    viewModel: MapScreenViewModel,
+    viewModel: ViewModel,
     markerList : List<WeatherForecast>
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val weatherData = markerList[0]
-    val location = LatLng(weatherData.latitude, weatherData.longtitude)
+    val weatherData = markerList.firstOrNull()
+    val location = LatLng(weatherData?.latitude ?: 0.0, weatherData?.longtitude ?: 0.0)
     val cameraPositionState by remember {
         mutableStateOf(
             CameraPositionState(CameraPosition.fromLatLngZoom(location, if (markerList.size == 1) 10f else 5f))
@@ -213,15 +225,16 @@ fun GoogleMapBox(
             Marker(
                 state = MarkerState(position = LatLng(marker.latitude, marker.longtitude)),
                 title = marker.dong.takeIf { it.isNotEmpty() } ?: marker.gu.takeIf { it.isNotEmpty() } ?: marker.city,
-                icon = viewModel.drawBitmapIcon(marker.icon),
+                icon = BitmapDrawHelper.drawBitmapIcon(marker.icon),
                 snippet = stringResource(marker.weatherMark)
             )
         }
     }
 
-    TextFieldBox(navController, cameraPositionState, viewModel)
-
-    CurrentLocButton(context, cameraPositionState, viewModel)
+    if (viewModel is MapScreenViewModel) {
+        TextFieldBox(navController, cameraPositionState, viewModel)
+        CurrentLocButton(context, cameraPositionState, viewModel)
+    }
 }
 
 @Composable

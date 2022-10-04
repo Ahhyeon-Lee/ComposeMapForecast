@@ -1,7 +1,7 @@
 package com.example.domain.usecase.map
 
 import com.example.domain.model.Regions
-import com.example.domain.repository.RegionsDBRepository
+import com.example.domain.repository.map.RegionsDBRepository
 import javax.inject.Inject
 
 class GetClosestRegionInDbUseCase @Inject constructor(
