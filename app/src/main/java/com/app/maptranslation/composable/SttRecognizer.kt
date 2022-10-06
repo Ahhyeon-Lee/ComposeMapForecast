@@ -94,7 +94,9 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
     override fun onBeginningOfSpeech() {}
     override fun onRmsChanged(p0: Float) {}
     override fun onBufferReceived(p0: ByteArray?) {}
-    override fun onEndOfSpeech() {}
+    override fun onEndOfSpeech() {
+        viewModel.setRecognizeState(RecognizeState.End)
+    }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

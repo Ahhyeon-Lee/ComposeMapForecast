@@ -1,6 +1,6 @@
 package com.example.datalayer.remote.service
 
-import com.example.datalayer.remote.model.NetworkWeatherForecastData
+import com.example.datalayer.remote.model.WeatherForecastResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -20,5 +20,5 @@ interface WeatherApiService {
         @Query("base_time") time:String,
         @Query("nx") nx:String,
         @Query("ny") ny:String
-    ) : NetworkWeatherForecastData
+    ) : WeatherForecastResponse
 }

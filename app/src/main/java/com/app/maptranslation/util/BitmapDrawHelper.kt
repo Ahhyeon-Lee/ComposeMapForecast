@@ -25,7 +25,7 @@ object BitmapDrawHelper {
             val rectF = RectF(rect)
             Canvas(image).apply {
                 drawRoundRect(rectF, 20f, 20f, paint)
-                drawText(it, width / 2f, (height+50) / 2f, paint)
+                drawText(it, width / 2f, (height+60) / 2f, paint)
             }
             BitmapDescriptorFactory.fromBitmap(image)
         }

@@ -5,7 +5,6 @@ import com.example.domain.model.WeatherForecast
 import kotlinx.coroutines.flow.Flow
 
 interface WeatherRepository {
-    suspend fun getWeatherInfo(
-        regionData: Regions, date:String, time:String
-    ): Flow<WeatherForecast>
+
+    suspend fun getWeatherInfo(regionData: Regions, date:String, time:String): Flow<WeatherForecast>
 }

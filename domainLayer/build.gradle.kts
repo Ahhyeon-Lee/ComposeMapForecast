@@ -56,6 +56,4 @@ dependencies {
     implementation(Libraries.Room.ROOM_RUNTIME)
     kapt(Libraries.Room.ROOM_COMPILER)
     implementation(Libraries.Room.ROOM_KTX)
-
-    implementation(project(":util"))
 }

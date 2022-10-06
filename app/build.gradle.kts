@@ -100,5 +100,4 @@ dependencies {
 
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
-    implementation(project(":util"))
 }

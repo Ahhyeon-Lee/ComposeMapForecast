@@ -14,9 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.maptranslation.util.ClovaRecognizer
 import com.app.maptranslation.viewmodel.ClovaRecognizerViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable

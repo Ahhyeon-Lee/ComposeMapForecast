@@ -18,4 +18,3 @@ rootProject.name = "map_translation"
 include(":app")
 include(":domainLayer")
 include(":dataLayer")
-include(":util")

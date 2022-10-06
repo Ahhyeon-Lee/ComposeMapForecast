@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -37,7 +38,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
@@ -57,11 +57,13 @@ import com.google.maps.android.compose.*
 
 @Composable
 fun MapScreen(navController: NavController, viewModel: MapScreenViewModel) {
-    val weatherData = viewModel.weatherState
-    val loading = viewModel.dbLoading
-    GoogleMapBox(navController, viewModel, listOf(weatherData))
-    if (loading) {
+    GoogleMapBox(navController, viewModel, listOf(viewModel.weatherState))
+    if (viewModel.dbLoading) {
         LoadingScreen("지역 데이터를 로딩중입니다.\n잠시만 기다려주세요.")
+    }
+    if (viewModel.toast.first) {
+        Toast.makeText(LocalContext.current, viewModel.toast.second, Toast.LENGTH_SHORT).show()
+        viewModel.resetToastData()
     }
 }
 
@@ -321,7 +323,7 @@ fun markCurrentLocWeatherInfo(context: Context, viewModel: MapScreenViewModel, c
     ) {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
-                Log.i("아현", "long : ${location.longitude} / lat : ${location.latitude}")
+                Log.i("현재 위치", "long : ${location.longitude} / lat : ${location.latitude}")
                 cameraPositionState?.move(CameraUpdateFactory.newLatLng(LatLng(location.latitude, location.longitude)))
                 if (!viewModel.dbLoading) {
                     viewModel.getCurrentLocWeatherInfo(location.longitude, location.latitude)

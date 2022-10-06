@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.ResultUiState
+import com.example.domain.model.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.*
@@ -21,15 +21,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapScreenViewModel @Inject constructor(
-    private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
+    private val checkRegionsDbDataUseCase: CheckRegionsDbDataUseCase,
     private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
     private val getClosestRegionInDbUseCase: GetClosestRegionInDbUseCase,
-    private val getWeatherInfoUsecase : GetWeatherInfoUsecase,
+    private val getWeatherInfoUseCase : GetWeatherInfoUseCase,
     private val insertWeatherHistoryDataInDbUseCase: InsertWeatherHistoryDataInDbUseCase,
     private val getADayWeatherHistoryUseCase: GetADayWeatherHistoryUseCase,
 ) : ViewModel() {
 
     var dbLoading by mutableStateOf(true)
+        private set
+
+    var toast by mutableStateOf(Pair(false, ""))
         private set
 
     var weatherState by mutableStateOf(WeatherForecast())
@@ -45,7 +48,7 @@ class MapScreenViewModel @Inject constructor(
         private set
 
     fun getWeatherInfo(regionData:Regions) = viewModelScope.launch {
-        getWeatherInfoUsecase.invoke(regionData)
+        getWeatherInfoUseCase.invoke(regionData)
             .onStart {
                 weatherApiLoading = true
             }
@@ -55,10 +58,11 @@ class MapScreenViewModel @Inject constructor(
                     is ResultUiState.Success -> {
                         weatherState = it.data
                         insertWeatherHistoryDataInDbUseCase.invoke(it.data)
-                        Log.i("아현", "$it")
+                        Log.i("getWeatherInfo", "날씨 검색 : $it")
                     }
-                    else -> {
-
+                    is ResultUiState.ErrorWithData -> {
+                        weatherState = it.data
+                        toast = Pair(true, "날씨 검색 오류가 발생했습니다.")
                     }
                 }
             }
@@ -74,17 +78,21 @@ class MapScreenViewModel @Inject constructor(
     fun getCurrentLocWeatherInfo(longtitude:Double, latitude:Double) = viewModelScope.launch {
         val closestRegion = getClosestRegionInDbUseCase.invoke(longtitude, latitude)
         getWeatherInfo(closestRegion)
-        Log.i("아현 location", "$closestRegion")
+        Log.i("getCurrentLocWeatherInfo", "현재 위치와 가장 가까운 지역 : $closestRegion")
     }
 
     fun checkDbAndInsertData(applicationContext: Context) {
         CoroutineScope(Dispatchers.IO).launch {
-            checkRegionsDbDataUsecase.invoke(applicationContext)
+            checkRegionsDbDataUseCase.invoke(applicationContext)
             dbLoading = false
         }
     }
 
     fun getADayWeatherHistoryList(date:String) = CoroutineScope(Dispatchers.IO).launch {
         weatherHistroyList = getADayWeatherHistoryUseCase.invoke(date)
+    }
+
+    fun resetToastData() {
+        toast = Pair(false, "")
     }
 }

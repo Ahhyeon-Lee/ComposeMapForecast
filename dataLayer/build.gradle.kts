@@ -61,5 +61,4 @@ dependencies {
     kapt(Libraries.Hilt.HILT_COMPILER)
 
     implementation(project(":domainLayer"))
-    implementation(project(":util"))
 }

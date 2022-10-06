@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/Map-Translation/app/src/main/res/drawable/ic_baseline_arrow_forward_24.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/Map-Translation/app/src/main/res/drawable/ic_baseline_mic_24.xml" value="0.1" />
         <entry key="..\:/AndroidProjects/Map-Translation/app/src/main/res/drawable/ic_baseline_wb_sunny_24.xml" value="0.1" />
       </map>

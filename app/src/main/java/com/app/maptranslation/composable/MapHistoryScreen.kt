@@ -17,7 +17,7 @@ import androidx.navigation.NavController
 import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapHistoryViewModel
 import com.example.domain.model.WeatherForecast
-import com.example.domain.usecase.DateTimeHelper
+import com.example.domain.util.DateTimeHelper
 
 @Composable
 fun MapHistoryScreen(

@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/dataLayer" />
             <option value="$PROJECT_DIR$/domainLayer" />
-            <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -3,7 +3,7 @@ package com.example.domain.usecase.translate
 import android.content.Context
 import com.example.domain.model.LanguageCodeData
 import com.example.domain.repository.translate.LanguageRepository
-import com.example.util.ExcelReadHelper
+import com.example.domain.util.ExcelReadHelper
 import javax.inject.Inject
 
 class GetLanguageCodeUseCase @Inject constructor(

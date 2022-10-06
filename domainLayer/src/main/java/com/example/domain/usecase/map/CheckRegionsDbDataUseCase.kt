@@ -2,7 +2,7 @@ package com.example.domain.usecase.map
 
 import android.content.Context
 import com.example.domain.repository.map.RegionsDBRepository
-import com.example.util.ExcelReadHelper
+import com.example.domain.util.ExcelReadHelper
 import javax.inject.Inject
 
 class CheckRegionsDbDataUseCase @Inject constructor(
