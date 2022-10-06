@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">map_translation</string>
+    <string name="map_history">Weather Search History</string>
+    <string name="map">Map</string>
+    <string name="translate">Translation</string>
+    <string name="translate_history">Translation History</string>
+    <string name="clova_stt">CLOVA STT</string>
+    <string name="text_input">Enter text</string>
+    <string name="address_input">Enter address text.</string>
+</resources>

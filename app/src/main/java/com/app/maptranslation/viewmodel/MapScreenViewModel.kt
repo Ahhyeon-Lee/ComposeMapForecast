@@ -1,24 +1,21 @@
 package com.app.maptranslation.viewmodel
 
 import android.content.Context
-import android.graphics.*
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.ResultUiState
 import com.example.domain.model.Regions
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.*
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,22 +24,33 @@ class MapScreenViewModel @Inject constructor(
     private val checkRegionsDbDataUsecase: CheckRegionsDbDataUseCase,
     private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
     private val getClosestRegionInDbUseCase: GetClosestRegionInDbUseCase,
+    private val getWeatherInfoUsecase : GetWeatherInfoUsecase,
     private val insertWeatherHistoryDataInDbUseCase: InsertWeatherHistoryDataInDbUseCase,
-    private val getWeatherInfoUsecase : GetWeatherInfoUsecase
+    private val getADayWeatherHistoryUseCase: GetADayWeatherHistoryUseCase,
 ) : ViewModel() {
 
-    var dbLoading = mutableStateOf(true)
+    var dbLoading by mutableStateOf(true)
         private set
 
     var weatherState by mutableStateOf(WeatherForecast())
         private set
 
+    var weatherApiLoading by mutableStateOf(false)
+        private set
+
     var regionsList : List<Regions> by mutableStateOf(listOf())
+        private set
+
+    var weatherHistroyList : List<WeatherForecast> by mutableStateOf(listOf())
         private set
 
     fun getWeatherInfo(regionData:Regions) = viewModelScope.launch {
         getWeatherInfoUsecase.invoke(regionData)
+            .onStart {
+                weatherApiLoading = true
+            }
             .collectLatest {
+                weatherApiLoading = false
                 when(it) {
                     is ResultUiState.Success -> {
                         weatherState = it.data
@@ -70,12 +78,13 @@ class MapScreenViewModel @Inject constructor(
     }
 
     fun checkDbAndInsertData(applicationContext: Context) {
-        dbLoading.value = true
         CoroutineScope(Dispatchers.IO).launch {
             checkRegionsDbDataUsecase.invoke(applicationContext)
-            dbLoading.value = false
+            dbLoading = false
         }
     }
 
-
+    fun getADayWeatherHistoryList(date:String) = CoroutineScope(Dispatchers.IO).launch {
+        weatherHistroyList = getADayWeatherHistoryUseCase.invoke(date)
+    }
 }

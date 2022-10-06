@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">map_translation</string>
     <string name="google_api_key" translatable="false">AIzaSyB5CT4h3QE66WnIoazTfpLrakScsavOEuA</string>
+
     <string name="map_history">날씨 검색 기록</string>
     <string name="map">지도</string>
     <string name="translate">번역</string>

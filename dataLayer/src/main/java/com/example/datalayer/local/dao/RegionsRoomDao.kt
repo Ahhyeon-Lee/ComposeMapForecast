@@ -22,7 +22,7 @@ interface RegionsRoomDao {
             "LIMIT 1")
     suspend fun getClosestRegion(longtitude:Double, latitude:Double) : RegionRowEntity
 
-    @Query("SELECT * FROM WeatherHistoryEntity")
+    @Query("SELECT * FROM WeatherHistoryEntity ORDER BY id DESC")
     suspend fun getAllWeatherHistoryList() : List<WeatherHistoryEntity>
 
     @Query("SELECT * FROM WeatherHistoryEntity WHERE :date = date")

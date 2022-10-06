@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -19,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,6 +39,14 @@ fun TranslateScreen(
     val focusManager = LocalFocusManager.current
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
 
+    val sttState by sttViewModel.recognizeState.collectAsStateWithLifecycleRemember(initial = RecognizeState.Ready)
+    var textFieldValueState by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
+
+    sttState.takeIf { it is RecognizeState.Result }?.let {
+        textFieldValueState = setTextFieldValueCursor((it as RecognizeState.Result).text)
+        sttViewModel.setRecognizeState(RecognizeState.End)
+    }
+
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -51,10 +61,11 @@ fun TranslateScreen(
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = sttViewModel.sttText.value,
+                value = textFieldValueState,
                 onValueChange = {
-                    sttViewModel.setSttText(it)
-                    viewModel.setSourceText(it)
+                    textFieldValueState = it
+                    sttViewModel.setSttText(it.text)
+                    viewModel.setSourceText(it.text)
                 },
                 modifier = Modifier
                     .height(200.dp)

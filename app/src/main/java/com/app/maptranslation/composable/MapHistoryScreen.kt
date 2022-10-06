@@ -2,7 +2,6 @@ package com.app.maptranslation.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -12,15 +11,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.app.maptranslation.R
 import com.app.maptranslation.viewmodel.MapHistoryViewModel
 import com.example.domain.model.WeatherForecast
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.domain.usecase.DateTimeHelper
 
 @Composable
 fun MapHistoryScreen(
@@ -41,16 +38,16 @@ fun MapHistoryScreen(
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             ) {
-                val weatherHistoryList = mapHistoryViewModel.weatherHistoryList.reversed()
+                val weatherHistoryList = mapHistoryViewModel.weatherHistoryList
                 itemsIndexed(weatherHistoryList) { index, weather ->
                     if (index == 0) {
-                        DateItem(navController, mapHistoryViewModel, mapHistoryViewModel.weatherHistoryList.filter { it.date == weather.date }, weather.date)
+                        DateItem(navController, weather.date)
                     }
 
                     HistoryItem(weather)
 
                     if (index < weatherHistoryList.size -1 && weatherHistoryList[index].date != weatherHistoryList[index+1].date) {
-                        DateItem(navController, mapHistoryViewModel, mapHistoryViewModel.weatherHistoryList.filter { it.date == weather.date }, weatherHistoryList[index+1].date)
+                        DateItem(navController, weatherHistoryList[index+1].date)
                     }
                 }
             }
@@ -61,8 +58,6 @@ fun MapHistoryScreen(
 @Composable
 fun DateItem(
     navController: NavController,
-    mapHistoryViewModel: MapHistoryViewModel,
-    weatherList: List<WeatherForecast>,
     date: String
 ) {
     Row(
@@ -72,7 +67,7 @@ fun DateItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = parseStringToDateFormat(date),
+            text = DateTimeHelper.parseStringToDateFormat(date, "yyyyMMdd", "yyyy년 MM월 dd일"),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -97,19 +92,19 @@ fun HistoryItem(weather : WeatherForecast) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .wrapContentHeight()
             .padding(10.dp),
         elevation = 5.dp
     ) {
-        Text(
-            text = "${weather.city}${ weather.gu}${ weather.dong} : ${stringResource(weather.weatherMark)}",
-            modifier = Modifier.padding(20.dp)
-        )
+        Column(modifier = Modifier.padding(15.dp)) {
+            Text(
+                text = DateTimeHelper.parseStringToDateFormat(weather.time, "HHmm", "HH:mm"),
+                fontSize = 12.sp
+            )
+            Text(
+                text = "${weather.city} ${weather.gu} ${weather.dong} : ${stringResource(weather.weatherMark)}",
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
-}
-
-fun parseStringToDateFormat(dateString:String) : String {
-    val stringFormat = SimpleDateFormat("yyyyMMdd")
-    val date = stringFormat.parse(dateString)
-    val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
-    return dateFormat.format(date)
 }

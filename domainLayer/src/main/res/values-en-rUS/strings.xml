@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="sunny">Sunny</string>
+    <string name="rain">Rain</string>
+    <string name="snow">Snow</string>
+    <string name="cloudy">Cloudy</string>
+    <string name="bad">Bad</string>
+</resources>

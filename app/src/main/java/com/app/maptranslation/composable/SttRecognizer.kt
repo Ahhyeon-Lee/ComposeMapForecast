@@ -85,6 +85,7 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
 
     override fun onResults(results: Bundle) {
         Toast.makeText(context, "음성인식 종료", Toast.LENGTH_SHORT).show()
+        viewModel.setRecognizeState(RecognizeState.Result(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0]))
         viewModel.setSttText(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0])
     }
 
@@ -93,9 +94,7 @@ private fun recognitionListener(context: Context, viewModel: SttRecognizerViewMo
     override fun onBeginningOfSpeech() {}
     override fun onRmsChanged(p0: Float) {}
     override fun onBufferReceived(p0: ByteArray?) {}
-    override fun onEndOfSpeech() {
-        viewModel.setRecognizeState(RecognizeState.End)
-    }
+    override fun onEndOfSpeech() {}
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
