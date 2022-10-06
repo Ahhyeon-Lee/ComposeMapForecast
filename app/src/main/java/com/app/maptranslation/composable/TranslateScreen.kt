@@ -65,7 +65,6 @@ fun TranslateScreen(
                 onValueChange = {
                     textFieldValueState = it
                     sttViewModel.setSttText(it.text)
-                    viewModel.setSourceText(it.text)
                 },
                 modifier = Modifier
                     .height(200.dp)

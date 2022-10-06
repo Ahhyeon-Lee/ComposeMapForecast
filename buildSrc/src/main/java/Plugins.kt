@@ -5,4 +5,5 @@ object Plugins {
     const val HILT_GRADLE = "dagger.hilt.android.plugin"
     const val KAPT = "kapt"
     const val MAPS_GRADLE = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin"
+    const val PARCELIZE = "kotlin-parcelize"
 }

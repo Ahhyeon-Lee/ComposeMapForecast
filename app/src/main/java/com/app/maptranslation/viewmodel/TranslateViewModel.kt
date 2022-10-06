@@ -25,9 +25,6 @@ class TranslateViewModel @Inject constructor(
     private val getTranslateHistoryUseCase : GetTranslateHistoryUseCase
 ) : ViewModel() {
 
-    private val _sourceText = mutableStateOf("")
-    val sourceText: State<String> = _sourceText
-
     private val _targetText = mutableStateOf("")
     val targetText: State<String> = _targetText
 
@@ -60,10 +57,6 @@ class TranslateViewModel @Inject constructor(
             setSelectSource(_languageCodeList.value[0])
             resetTargetList()
         }
-    }
-
-    fun setSourceText(text: String) {
-        _sourceText.value = text
     }
 
     fun setSelectSource(code: LanguageCodeData) {

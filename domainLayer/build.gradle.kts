@@ -4,7 +4,7 @@ plugins {
     id(Plugins.ANDROID_LIBRARY)
     id(Plugins.JETBRAINS_ANDROID)
     kotlin(Plugins.KAPT)
-    id("kotlin-parcelize")
+    id(Plugins.PARCELIZE)
 }
 
 android {

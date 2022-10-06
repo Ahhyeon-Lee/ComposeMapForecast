@@ -96,7 +96,7 @@ dependencies {
 
     implementation(Libraries.Lottie.LOTTIE_COMPOSE)
 
-    implementation("com.naver.speech.clientapi:naverspeech-ncp-sdk-android:1.1.6")
+    implementation(Libraries.Naver.SPEECH)
 
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))

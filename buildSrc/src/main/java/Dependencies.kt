@@ -15,7 +15,6 @@ object Versions {
     const val OKHTTP = "3.11.0"
     const val ROOM = "2.4.3"
     const val PERMISSION = "0.26.4-beta"
-    const val EMOJI = "1.0.0-alpha03"
     const val LOTTIE = "5.2.0"
 }
 
@@ -61,13 +60,11 @@ object Libraries {
 
     object Coroutine {
         const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
-        const val FLOW_ADAPTER = "tech.thdev:flow-call-adapter-factory:1.0.0"
     }
 
     object Retrofit {
         const val RETROFIT = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
         const val CONVERTER_GSON = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
-        const val CONVERTER_SCALARS = "com.squareup.retrofit2:co}nverter-scalars:${Versions.RETROFIT}"
         const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
         const val OKHTTP_LOGGING = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     }
@@ -83,8 +80,6 @@ object Libraries {
     }
 
     object ExcelReader {
-        const val FASTEXCEL = "org.dhatim:fastexcel:0.12.3"
-        const val FASTEXCEL_READER = "org.dhatim:fastexcel-reader:0.12.3"
         const val JEXCEL = "net.sourceforge.jexcelapi:jxl:2.6.12"
     }
 
@@ -92,4 +87,7 @@ object Libraries {
         const val LOTTIE_COMPOSE = "com.airbnb.android:lottie-compose:${Versions.LOTTIE}"
     }
 
+    object Naver {
+        const val SPEECH = "com.naver.speech.clientapi:naverspeech-ncp-sdk-android:1.1.6"
+    }
 }
