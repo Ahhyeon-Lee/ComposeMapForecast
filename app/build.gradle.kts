@@ -98,6 +98,8 @@ dependencies {
 
     implementation(Libraries.Naver.SPEECH)
 
+    debugImplementation(Libraries.Canary.LEAK_CANARY)
+
     implementation(project(":domainLayer"))
     implementation(project(":dataLayer"))
 }

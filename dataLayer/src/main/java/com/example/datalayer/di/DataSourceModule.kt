@@ -11,11 +11,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
 
+    @Singleton
     @Provides
     fun provideRegionsRoomDataSource(
         database: AppDatabase
@@ -23,6 +25,7 @@ object DataSourceModule {
         return RegionsRoomDataSource(database.regionDao())
     }
 
+    @Singleton
     @Provides
     fun provideWeatherApiDataSource(
         @RetrofitNetworkModule.Weather apiService: WeatherApiService
@@ -30,11 +33,13 @@ object DataSourceModule {
         return WeatherApiDataSource(apiService)
     }
 
+    @Singleton
     @Provides
     fun provideTranslateRoomDataSource(
         database: AppDatabase
     ): TranslateRoomDataSource = TranslateRoomDataSource(database.translateDao())
 
+    @Singleton
     @Provides
     fun provideTranslateApiDataSource(
         @RetrofitNetworkModule.Translation service: TranslateApiService

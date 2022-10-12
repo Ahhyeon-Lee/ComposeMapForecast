@@ -56,4 +56,6 @@ dependencies {
     implementation(Libraries.Room.ROOM_RUNTIME)
     kapt(Libraries.Room.ROOM_COMPILER)
     implementation(Libraries.Room.ROOM_KTX)
+
+    debugImplementation(Libraries.Canary.LEAK_CANARY)
 }

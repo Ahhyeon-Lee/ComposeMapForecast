@@ -13,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -53,29 +54,35 @@ object RetrofitNetworkModule {
             .build()
     }
 
+    @Singleton
+    @Provides
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient
+    ) : Retrofit.Builder {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+    }
+
     @Weather
     @Provides
     fun provideWeatherRetrofit(
-        okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder,
         @Weather BASE_URL: String
     ): Retrofit {
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
+        return retrofitBuilder
             .baseUrl(BASE_URL)
-            .client(okHttpClient)
             .build()
     }
 
     @Translation
     @Provides
     fun provideTranslationRetrofit(
-        okHttpClient: OkHttpClient,
+        retrofitBuilder: Retrofit.Builder,
         @Translation BASE_URL: String
     ): Retrofit {
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
+        return retrofitBuilder
             .baseUrl(BASE_URL)
-            .client(okHttpClient)
             .build()
     }
 

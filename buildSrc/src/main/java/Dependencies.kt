@@ -90,4 +90,8 @@ object Libraries {
     object Naver {
         const val SPEECH = "com.naver.speech.clientapi:naverspeech-ncp-sdk-android:1.1.6"
     }
+
+    object Canary {
+        const val LEAK_CANARY = "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    }
 }

@@ -60,5 +60,7 @@ dependencies {
     implementation(Libraries.Hilt.HILT_VIEWMODEL)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
+    debugImplementation(Libraries.Canary.LEAK_CANARY)
+
     implementation(project(":domainLayer"))
 }

@@ -7,13 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.model.ResultUiState
 import com.example.domain.model.Regions
+import com.example.domain.model.ResultUiState
 import com.example.domain.model.WeatherForecast
 import com.example.domain.usecase.map.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -21,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapScreenViewModel @Inject constructor(
+    private val ioScope: CoroutineScope,
     private val checkRegionsDbDataUseCase: CheckRegionsDbDataUseCase,
     private val getSearchedRegionsUseCase: GetSearchedRegionsUseCase,
     private val getClosestRegionInDbUseCase: GetClosestRegionInDbUseCase,
@@ -82,13 +82,13 @@ class MapScreenViewModel @Inject constructor(
     }
 
     fun checkDbAndInsertData(applicationContext: Context) {
-        CoroutineScope(Dispatchers.IO).launch {
+        ioScope.launch {
             checkRegionsDbDataUseCase.invoke(applicationContext)
             dbLoading = false
         }
     }
 
-    fun getADayWeatherHistoryList(date:String) = CoroutineScope(Dispatchers.IO).launch {
+    fun getADayWeatherHistoryList(date:String) = ioScope.launch {
         weatherHistroyList = getADayWeatherHistoryUseCase.invoke(date)
     }
 
